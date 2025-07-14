@@ -13,7 +13,7 @@ import java.util.List;
 @Table(name="user")
 public class User {
     @Id
-    private long userId;
+    private Long userId;
 
     private String firstName;
 
@@ -44,7 +44,7 @@ public class User {
 
     }
 
-    public long getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
@@ -91,7 +91,7 @@ public class User {
     }
 
     public static class Builder {
-        private long userId;
+        private Long userId;
         private String username;
         private String password;
         private String email;
@@ -100,7 +100,7 @@ public class User {
         private int age;
         private String bio;
 
-        public Builder setUserId(long userId) {
+        public Builder setUserId(Long userId) {
             this.userId = userId;
             return this;
         }

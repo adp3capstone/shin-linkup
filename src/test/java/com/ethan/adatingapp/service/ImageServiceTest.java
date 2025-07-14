@@ -1,5 +1,6 @@
 package com.ethan.adatingapp.service;
 
+import com.ethan.adatingapp.domain.User;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -21,8 +22,19 @@ class ImageServiceTest {
     String dataUrl = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACEAAAAhCAYAAABX5MJvAAAAAXNSR0IArs4c6QAAAj9JREFUWEftVjFvEzEY/T5bSEUsjVSMsqV3HRgD16EbysYGa7eywZZOlH8QpnaDrYxswD+ACSRq6MaSS7MRrkh0qcpQn+FLMbiXc+zjKhSk3HQ6+973/L7nZyPMwIMzwAHmJEwXgpQ4aLcWr3D+rWrrjpVqLO8Pj3z//Z8kGOJd38pyrV/SnFpKZElM0i+WFRMy9aqXJbF2EB0JmTaLYxOAWRIfAEDLtdqaJAh2KGS6bOOXkfi1Ct0Flb+hyTmDBYb8Lb1XIaEQO/z09MyYnN0CwJ0yDCcJ6v3SXv8V/WTvjiokbE98XV25Y7xSxHCSQMSdq3v9zYsicbi6sq217oYqQbKvAcB3IdPLF0XCMutrIdPOVE98brdanHMyJwDgIyH7vbrtGN2MugxxewzJVFO8H46mkqDBLIk+AeD1s4l6/1jlHZOYVTwBJ6oJC3wXEG4bLCEHN7xb1ExwbdVKJM5XK82Isd6uPKDvX5LoPgI+sedcUqrR8JwHxbDSoB9ck4Onrlre9LOUMSk6ETY2uKXgkZBpY9oizVgwifOGhWdCpveKBbIk3v2ZiBsuA9ZWggAOk/iFBrAOMOwxhHe5ztcAcOt3EQ3PxYd0PUQFryfKQMp8Ys/z9b8MM7gdk9JHDwGwZ74z0FtLcvA4dPXenAgFypLoIwC2KUvK9n8ozl8rQQXmJP5kxz9uB90Hij3OtaZLCt3ChgxxfEzbj7mP+LwR7Ikp90ZnjZBzplJOzAQJn6R1xoPbUaeI7985CaPQD273HzEp88iMAAAAAElFTkSuQmCC";
     byte[] imageBytes = convertBase64ToBytes(dataUrl);
 
+    User user = new User.Builder()
+            .setUserId(99965432L) // assuming userId is manually set here for the test
+            .setUsername("testUser")
+            .setPassword("password")
+            .setEmail("test@example.com")
+            .setFirstName("Test")
+            .setLastName("User")
+            .setAge(25)
+            .setBio("This is a test user.")
+            .build();
+
     public Image image = ImageFactory
-            .createImage(124235345, imageBytes);
+            .createImage(user, imageBytes);
 
     @Autowired
     public ImageServiceTest(ImageService imageService) {
@@ -40,7 +52,7 @@ class ImageServiceTest {
     @Test
     @Order(2)
     void read() {
-        Image readImage = imageService.read(5L);
+        Image readImage = imageService.read(6L);
         assertNotNull(readImage);
         System.out.println("Read: " + readImage);
     }
@@ -50,8 +62,7 @@ class ImageServiceTest {
     void update() {
         Image updatedImage = new Image.Builder()
                 .copy(image)
-                .setImageId(5L)
-                .setUserId(123456789L)
+                .setImageId(3L)
                 .setImageUrl(imageBytes)
                 .build();
 
@@ -63,8 +74,8 @@ class ImageServiceTest {
     @Test
     @Order(4)
     void delete() {
-        imageService.delete(5L);
-        Image deletedImage = imageService.read(5L);
+        imageService.delete(8L);
+        Image deletedImage = imageService.read(8L);
         assertNull(deletedImage);
         System.out.println("Deleted: " + deletedImage);
     }

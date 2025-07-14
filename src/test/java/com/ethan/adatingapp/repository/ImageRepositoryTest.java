@@ -1,5 +1,6 @@
 package com.ethan.adatingapp.repository;
 
+import com.ethan.adatingapp.domain.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,7 +25,17 @@ class ImageRepositoryTest {
 
     @Test
     void createImage() {
-        Image image = ImageFactory.createImage(5L,  imageBytes);
+        User user = new User.Builder()
+                .setUserId(98765432L) // assuming userId is manually set here for the test
+                .setUsername("testUser")
+                .setPassword("password")
+                .setEmail("test@example.com")
+                .setFirstName("Test")
+                .setLastName("User")
+                .setAge(25)
+                .setBio("This is a test user.")
+                .build();
+        Image image = ImageFactory.createImage(user,  imageBytes);
         assertNull(image.getImageId());
 
         Image savedImage = imageRepository.save(image);

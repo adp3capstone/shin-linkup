@@ -14,7 +14,10 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long imageId;
 
-    private Long userId;
+    @OneToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "userId", unique = true, nullable = false)
+    private User user;
+
     @Lob
     @Basic(fetch = FetchType.LAZY)
     private byte[] imageUrl;
@@ -23,7 +26,7 @@ public class Image {
 
     private Image(Builder builder) {
         this.imageId = builder.imageId;
-        this.userId = builder.userId;
+        this.user = builder.user;
         this.imageUrl = builder.imageUrl;
     }
 
@@ -31,8 +34,8 @@ public class Image {
         return imageId;
     }
 
-    public Long getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
     public byte[] getImageUrl() {
@@ -43,14 +46,14 @@ public class Image {
     public String toString() {
         return "Image{" +
                 "imageId=" + imageId +
-                ", userId=" + userId +
+                ", user=" + user +
                 ", imageUrl='" + imageUrl + '\'' +
                 '}';
     }
 
     public static class Builder{
         private Long imageId;
-        private Long userId;
+        private User user;
         private byte[] imageUrl;
 
         public Builder setImageId(Long imageId) {
@@ -58,8 +61,8 @@ public class Image {
             return this;
         }
 
-        public Builder setUserId(Long userId) {
-            this.userId = userId;
+        public Builder setUser(User user) {
+            this.user = user;
             return this;
         }
 
@@ -70,7 +73,7 @@ public class Image {
 
         public Builder copy(Image image){
             this.imageId = image.imageId;
-            this.userId = image.userId;
+            this.user = image.user;
             this.imageUrl = image.imageUrl;
             return this;
         }
