@@ -23,7 +23,7 @@ class ImageControllerTest {
     byte[] imageBytes = convertBase64ToBytes(dataUrl);
 
     public Image image = ImageFactory
-            .createImage(99876543,8765432, imageBytes);
+            .createImage(99876543, imageBytes);
 
     @Autowired
     ImageControllerTest(ImageController imageController) {
@@ -34,7 +34,7 @@ class ImageControllerTest {
     @Test
     @Order(2)
     void getImageById() {
-        Image img = imageController.getImageById(image.getImageId()).getBody();
+        Image img = imageController.getImageById(1).getBody();
         assertNotNull(img);
         System.out.println("Image found: " + img);
     }
@@ -51,7 +51,7 @@ class ImageControllerTest {
     void updateImage() {
         Image updatedImage = new Image.Builder()
                 .copy(image)
-                .setUserId(8765432)
+                .setUserId(8765432L)
                 .setImageUrl(imageBytes)
                 .build();
 
@@ -62,8 +62,8 @@ class ImageControllerTest {
 
     @Test
     void deleteImage() {
-        imageController.deleteImage(image.getImageId());
-        assertNull(imageController.getImageById(image.getImageId()).getBody());
+        imageController.deleteImage(4);
+        assertNull(imageController.getImageById(4).getBody());
         System.out.println("Deleted: " + image);
     }
 }

@@ -19,7 +19,6 @@ class ImageFactoryTest {
 
         Image dummyImage = ImageFactory.createImage(
                 199999,
-                1098690,
                 imageBytes
         );
 

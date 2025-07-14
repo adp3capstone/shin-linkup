@@ -4,6 +4,7 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import com.ethan.adatingapp.domain.Image;
 import com.ethan.adatingapp.factory.ImageFactory;
@@ -21,8 +22,9 @@ class ImageServiceTest {
     byte[] imageBytes = convertBase64ToBytes(dataUrl);
 
     public Image image = ImageFactory
-            .createImage(124235345,123456789, imageBytes);
+            .createImage(124235345, imageBytes);
 
+    @Autowired
     public ImageServiceTest(ImageService imageService) {
         this.imageService = imageService;
     }
@@ -38,7 +40,7 @@ class ImageServiceTest {
     @Test
     @Order(2)
     void read() {
-        Image readImage = imageService.read(image.getImageId());
+        Image readImage = imageService.read(5L);
         assertNotNull(readImage);
         System.out.println("Read: " + readImage);
     }
@@ -48,7 +50,8 @@ class ImageServiceTest {
     void update() {
         Image updatedImage = new Image.Builder()
                 .copy(image)
-                .setUserId(123456789)
+                .setImageId(5L)
+                .setUserId(123456789L)
                 .setImageUrl(imageBytes)
                 .build();
 
@@ -60,8 +63,8 @@ class ImageServiceTest {
     @Test
     @Order(4)
     void delete() {
-        imageService.delete(image.getImageId());
-        Image deletedImage = imageService.read(image.getImageId());
+        imageService.delete(5L);
+        Image deletedImage = imageService.read(5L);
         assertNull(deletedImage);
         System.out.println("Deleted: " + deletedImage);
     }

@@ -11,8 +11,10 @@ import jakarta.persistence.*;
 @Table(name="image")
 public class Image {
     @Id
-    private long imageId;
-    private long userId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long imageId;
+
+    private Long userId;
     @Lob
     @Basic(fetch = FetchType.LAZY)
     private byte[] imageUrl;
@@ -25,11 +27,11 @@ public class Image {
         this.imageUrl = builder.imageUrl;
     }
 
-    public long getImageId() {
+    public Long getImageId() {
         return imageId;
     }
 
-    public long getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
@@ -47,16 +49,16 @@ public class Image {
     }
 
     public static class Builder{
-        private long imageId;
-        private long userId;
+        private Long imageId;
+        private Long userId;
         private byte[] imageUrl;
 
-        public Builder setImageId(long imageId) {
+        public Builder setImageId(Long imageId) {
             this.imageId = imageId;
             return this;
         }
 
-        public Builder setUserId(long userId) {
+        public Builder setUserId(Long userId) {
             this.userId = userId;
             return this;
         }

@@ -8,19 +8,15 @@ import com.ethan.adatingapp.util.Helper;
 
 public class ImageFactory {
     public static Image createImage(
-            long imageId,
             long userId,
             byte[] imageUrl
     ){
-        if(
-                !Helper.isValidLong(imageId)
-                || !Helper.isValidLong(userId)
+        if( !Helper.isValidLong(userId)
                 || imageUrl == null || imageUrl.length == 0
         ){
             return null;
         }
         return new Image.Builder()
-                .setImageId(imageId)
                 .setUserId(userId)
                 .setImageUrl(imageUrl)
                 .build();
