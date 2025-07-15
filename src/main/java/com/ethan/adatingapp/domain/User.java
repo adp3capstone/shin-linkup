@@ -4,10 +4,7 @@ import com.ethan.adatingapp.domain.enums.Gender;
 import com.ethan.adatingapp.domain.enums.Institution;
 import com.ethan.adatingapp.domain.enums.Interest;
 import com.ethan.adatingapp.domain.enums.RelationshipType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -19,6 +16,7 @@ import java.util.List;
 public class User {
     @Id
     @Column(name = "user_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
     private String firstName;
@@ -40,6 +38,9 @@ public class User {
     private List<Interest> interests;
     private RelationshipType relationshipType;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Image image;
+
     private User(Builder builder) {
         this.userId = builder.userId;
         this.username = builder.username;
@@ -54,6 +55,8 @@ public class User {
         this.gender = builder.gender;
         this.interests = builder.interests;
         this.relationshipType = builder.relationshipType;
+
+        this.image = builder.image;
     }
 
     public User() {
@@ -109,6 +112,10 @@ public class User {
         return relationshipType;
     }
 
+    public Image getImage() {
+        return image;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -124,6 +131,7 @@ public class User {
                 ", gender=" + gender +
                 ", interests=" + interests +
                 ", relationshipType=" + relationshipType +
+                ", image=" + image +
                 '}';
     }
 
@@ -141,6 +149,13 @@ public class User {
         private Gender gender;
         private List<Interest> interests;
         private RelationshipType relationshipType;
+
+        private Image image;
+
+        public Builder setImage(Image image) {
+            this.image = image;
+            return this;
+        }
 
         public Builder setUserId(Long userId) {
             this.userId = userId;
