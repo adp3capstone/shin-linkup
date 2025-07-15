@@ -1,5 +1,10 @@
 package com.ethan.adatingapp.domain;
 
+import com.ethan.adatingapp.domain.enums.Gender;
+import com.ethan.adatingapp.domain.enums.Institution;
+import com.ethan.adatingapp.domain.enums.Interest;
+import com.ethan.adatingapp.domain.enums.RelationshipType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -13,6 +18,7 @@ import java.util.List;
 @Table(name="user")
 public class User {
     @Id
+    @Column(name = "user_id")
     private Long userId;
 
     private String firstName;
@@ -29,6 +35,11 @@ public class User {
 
     private String bio;
 
+    private Institution institution;
+    private Gender gender;
+    private List<Interest> interests;
+    private RelationshipType relationshipType;
+
     private User(Builder builder) {
         this.userId = builder.userId;
         this.username = builder.username;
@@ -38,6 +49,11 @@ public class User {
         this.lastName = builder.lastName;
         this.age = builder.age;
         this.bio = builder.bio;
+
+        this.institution = builder.institution;
+        this.gender = builder.gender;
+        this.interests = builder.interests;
+        this.relationshipType = builder.relationshipType;
     }
 
     public User() {
@@ -76,17 +92,38 @@ public class User {
         return bio;
     }
 
+
+    public Institution getInstitution() {
+        return institution;
+    }
+
+    public Gender getGender() {
+        return gender;
+    }
+
+    public List<Interest> getInterests() {
+        return interests;
+    }
+
+    public RelationshipType getRelationshipType() {
+        return relationshipType;
+    }
+
     @Override
     public String toString() {
         return "User{" +
                 "userId=" + userId +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", email='" + email + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
                 ", age=" + age +
                 ", bio='" + bio + '\'' +
+                ", institution=" + institution +
+                ", gender=" + gender +
+                ", interests=" + interests +
+                ", relationshipType=" + relationshipType +
                 '}';
     }
 
@@ -99,6 +136,11 @@ public class User {
         private String lastName;
         private int age;
         private String bio;
+
+        private Institution institution;
+        private Gender gender;
+        private List<Interest> interests;
+        private RelationshipType relationshipType;
 
         public Builder setUserId(Long userId) {
             this.userId = userId;
@@ -140,6 +182,26 @@ public class User {
             return this;
         }
 
+        public Builder setInstitution(Institution institution) {
+            this.institution = institution;
+            return this;
+        }
+
+        public Builder  setGender(Gender gender) {
+            this.gender = gender;
+            return this;
+        }
+
+        public Builder  setInterests(List<Interest> interests) {
+            this.interests = interests;
+            return this;
+        }
+
+        public Builder  setRelationshipType(RelationshipType relationshipType) {
+            this.relationshipType = relationshipType;
+            return this;
+        }
+
         public Builder copy(User user) {
             this.userId = user.userId;
             this.username = user.username;
@@ -149,6 +211,12 @@ public class User {
             this.lastName = user.lastName;
             this.age = user.age;
             this.bio = user.bio;
+
+            this.institution = user.institution;
+            this.interests = user.interests;
+            this.gender = user.gender;
+            this.relationshipType = user.relationshipType;
+
             return this;
         }
 

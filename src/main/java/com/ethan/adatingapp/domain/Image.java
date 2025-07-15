@@ -15,7 +15,7 @@ public class Image {
     private Long imageId;
 
     @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "userId", unique = true, nullable = false)
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id", unique = true, nullable = false)
     private User user;
 
     @Lob

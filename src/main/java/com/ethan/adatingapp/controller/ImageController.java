@@ -5,6 +5,7 @@ Author: Ethan Le Roux (222622172)
 Date:10 July 2025
 */
 
+import com.ethan.adatingapp.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import com.ethan.adatingapp.domain.Image;
 import com.ethan.adatingapp.service.ImageService;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/image")
@@ -35,6 +37,12 @@ public class ImageController {
 
     @PostMapping
     public ResponseEntity<Image> createImage(@RequestBody Image image) {
+        List<Image> existingImages = imageService.findByUserId(image.getUser().getUserId());
+        if (!existingImages.isEmpty()) {
+            return ResponseEntity
+                    .status(409)
+                    .body(null); // Conflict: User already has an image
+        }
         Image createdImage = imageService.create(image);
         return ResponseEntity
                 .created(URI.create("/image/"+ createdImage.getImageId()))
@@ -51,7 +59,7 @@ public class ImageController {
         }
     }
 
-    @DeleteMapping
+    @DeleteMapping("/delete")
     public ResponseEntity<Void> deleteImage(@RequestParam long imageId) {
         imageService.delete(imageId);
         if (imageService.read(imageId) != null) {

@@ -41,7 +41,7 @@ public class UserController {
 
 //        String token = jwtUtil.generateToken(request.getUsername());
 
-        String token = "You is logged in!";
+        String token = foundUser.getUserId().toString();
 
         return ResponseEntity.ok(new AuthResponse(token, foundUser));
     }
@@ -87,6 +87,38 @@ public class UserController {
         User user = userService.read(userId);
         if (user != null) {
             return ResponseEntity.ok(user);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PutMapping("/preferences")
+    public ResponseEntity<User> updatePreferences(@RequestBody User user) {
+        User existingUser = userService.read(user.getUserId());
+
+        System.out.println("Updating preferences for user: " + existingUser);
+
+        User updatedUser = new User.Builder().copy(existingUser)
+                .setGender(user.getGender())
+                .setAge(user.getAge())
+                .setBio(user.getBio())
+                .setRelationshipType(user.getRelationshipType())
+                .setInterests(user.getInterests())
+                .setInstitution(user.getInstitution())
+                .build();
+
+        System.out.println("Updated user preferences: " + updatedUser);
+
+            return ResponseEntity.ok(updatedUser);
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<Void> deleteImage(@RequestParam long userId) {
+        userService.delete(userId);
+        if (userService.read(userId) != null) {
+            return ResponseEntity
+                    .status(409)
+                    .build();
         } else {
             return ResponseEntity.notFound().build();
         }

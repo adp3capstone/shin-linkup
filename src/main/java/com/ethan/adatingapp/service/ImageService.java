@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import com.ethan.adatingapp.domain.Image;
 import com.ethan.adatingapp.repository.ImageRepository;
 
+import java.util.List;
+
 @Service
 public class ImageService {
     private final ImageRepository imageRepository;
@@ -31,6 +33,14 @@ public class ImageService {
 
     public void delete(Long id) {
         imageRepository.deleteById(id);
+    }
+
+    public List<Image> findAll() {
+        return imageRepository.findAll();
+    }
+
+    public  List<Image> findByUserId(Long userId) {
+        return imageRepository.findAllByUser_UserId(userId);
     }
 
 }
