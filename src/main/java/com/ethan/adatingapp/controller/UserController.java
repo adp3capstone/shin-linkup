@@ -2,6 +2,9 @@ package com.ethan.adatingapp.controller;
 
 import com.ethan.adatingapp.domain.User;
 import com.ethan.adatingapp.service.UserService;
+import com.ethan.adatingapp.util.AuthRequest;
+import com.ethan.adatingapp.util.AuthResponse;
+import com.ethan.adatingapp.util.JwtUtil;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,16 +18,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/user/signup")
+@RequestMapping("/user")
 public class UserController {
     private final UserService userService;
 
+    private final JwtUtil jwtUtil;
+
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService,
+                          JwtUtil jwtUtil) {
         this.userService = userService;
+        this.jwtUtil = jwtUtil;
     }
 
-    @PostMapping
+    @PostMapping("/login")
+    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
+        User foundUser = userService.findByUsernameAndPassword(request.getUsername(), request.getPassword());
+
+        if (foundUser == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+//        String token = jwtUtil.generateToken(request.getUsername());
+
+        String token = "You is logged in!";
+
+        return ResponseEntity.ok(new AuthResponse(token, foundUser));
+    }
+
+    @PostMapping("/signup")
     public ResponseEntity<?> createUser(@RequestBody User user) {
         List<String> errors = new ArrayList<>();
 
@@ -59,20 +81,6 @@ public class UserController {
         User createdUser = userService.create(user);
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
-
-
-//    @PostMapping
-//    public ResponseEntity<User> createUser(User user) {
-//
-////        if(result.hasErrors()){
-////            return ResponseEntity.badRequest().body(result.getFieldError().getDefaultMessage());
-////        }
-//
-//        User createdUser = userService.create(user);
-//        return ResponseEntity
-//                .created(URI.create("/user/" + createdUser.getUserId()))
-//                .body(createdUser);
-//    }
 
     @GetMapping("/{userId}")
     public ResponseEntity<User> getUserById(@PathVariable long userId) {

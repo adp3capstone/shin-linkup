@@ -17,19 +17,23 @@ public class UserService {
 
     public User create(User user) {
         //Encrypt password before saving
-        String encryptedPassword = BCrypt.withDefaults()
-                .hashToString(12, user.getPassword().toCharArray());
+//        String encryptedPassword = BCrypt.withDefaults()
+//                .hashToString(12, user.getPassword().toCharArray());
+//
+//        User encryptedUser = new User.Builder()
+//                .copy(user)
+//                .setPassword(encryptedPassword)
+//                .build();
 
-        User encryptedUser = new User.Builder()
-                .copy(user)
-                .setPassword(encryptedPassword)
-                .build();
-
-        return userRepository.save(encryptedUser);
+        return userRepository.save(user);
     }
 
     public User read(Long id) {
         return userRepository.findById(id).orElse(null);
+    }
+
+    public User findByUsernameAndPassword(String username, String password) {
+        return userRepository.findByUsernameAndPassword(username, password);
     }
 
     public User update(User user) {
