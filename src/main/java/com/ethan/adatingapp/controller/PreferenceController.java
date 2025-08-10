@@ -1,0 +1,61 @@
+package com.ethan.adatingapp.controller;
+
+import com.ethan.adatingapp.domain.Preference;
+import com.ethan.adatingapp.domain.User;
+import com.ethan.adatingapp.service.PreferenceService;
+import com.ethan.adatingapp.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/pref")
+public class PreferenceController {
+    private final PreferenceService preferenceService;
+    private final UserService userService;
+
+    @Autowired
+    public PreferenceController(PreferenceService preferenceService, UserService userService) {
+        this.preferenceService = preferenceService;
+        this.userService = userService;
+    }
+
+    @PostMapping
+    public ResponseEntity<Preference> createPreference(@RequestBody Preference preference) {
+        Long userId = preference.getUser().getUserId();
+        User user = userService.read(userId);
+        if (user == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        preference.setUser(user);
+        Preference saved = preferenceService.create(preference);
+        return ResponseEntity.ok(saved);
+    }
+
+    @GetMapping
+    public ResponseEntity<Preference> getPreference(@RequestParam Long id) {
+        Preference preference = preferenceService.read(id);
+        if (preference != null) {
+            return ResponseEntity.ok(preference);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PutMapping
+    public ResponseEntity<Preference> updatePreference(@RequestBody Preference preference) {
+        Preference updatedPreference = preferenceService.update(preference);
+        if (updatedPreference != null) {
+            return ResponseEntity.ok(updatedPreference);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deletePreference(@RequestParam Long id) {
+        preferenceService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+}

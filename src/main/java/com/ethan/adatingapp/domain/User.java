@@ -35,29 +35,38 @@ public class User {
 
     private Institution institution;
     private Gender gender;
+
+    @ElementCollection(targetClass = Interest.class)
+    @Enumerated(EnumType.STRING)
+    @CollectionTable(
+            name = "user_interests",
+            joinColumns = @JoinColumn(name = "user_id")
+    )
+    @Column(name = "interest")
     private List<Interest> interests;
-    private RelationshipType relationshipType;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Image image;
 
-    private User(Builder builder) {
-        this.userId = builder.userId;
-        this.username = builder.username;
-        this.password = builder.password;
-        this.email = builder.email;
-        this.firstName = builder.firstName;
-        this.lastName = builder.lastName;
-        this.age = builder.age;
-        this.bio = builder.bio;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Preference preferences;
 
-        this.institution = builder.institution;
-        this.gender = builder.gender;
-        this.interests = builder.interests;
-        this.relationshipType = builder.relationshipType;
-
-        this.image = builder.image;
-    }
+//    private User(Builder builder) {
+//        this.userId = builder.userId;
+//        this.username = builder.username;
+//        this.password = builder.password;
+//        this.email = builder.email;
+//        this.firstName = builder.firstName;
+//        this.lastName = builder.lastName;
+//        this.age = builder.age;
+//        this.bio = builder.bio;
+//
+//        this.institution = builder.institution;
+//        this.gender = builder.gender;
+//        this.interests = builder.interests;
+//
+//        this.image = builder.image;
+//    }
 
     public User() {
 
@@ -108,12 +117,12 @@ public class User {
         return interests;
     }
 
-    public RelationshipType getRelationshipType() {
-        return relationshipType;
-    }
-
     public Image getImage() {
         return image;
+    }
+
+    public Preference getPreferences() {
+        return preferences;
     }
 
     @Override
@@ -130,113 +139,156 @@ public class User {
                 ", institution=" + institution +
                 ", gender=" + gender +
                 ", interests=" + interests +
-                ", relationshipType=" + relationshipType +
                 ", image=" + image +
                 '}';
     }
 
-    public static class Builder {
-        private Long userId;
-        private String username;
-        private String password;
-        private String email;
-        private String firstName;
-        private String lastName;
-        private int age;
-        private String bio;
-
-        private Institution institution;
-        private Gender gender;
-        private List<Interest> interests;
-        private RelationshipType relationshipType;
-
-        private Image image;
-
-        public Builder setImage(Image image) {
-            this.image = image;
-            return this;
-        }
-
-        public Builder setUserId(Long userId) {
-            this.userId = userId;
-            return this;
-        }
-
-        public Builder setUsername(String username) {
-            this.username = username;
-            return this;
-        }
-
-        public Builder setPassword(String password) {
-            this.password = password;
-            return this;
-        }
-
-        public Builder setEmail(String email) {
-            this.email = email;
-            return this;
-        }
-
-        public Builder setFirstName(String firstName) {
-            this.firstName = firstName;
-            return this;
-        }
-
-        public Builder setLastName(String lastName) {
-            this.lastName = lastName;
-            return this;
-        }
-
-        public Builder setAge(int age) {
-            this.age = age;
-            return this;
-        }
-
-        public Builder setBio(String bio) {
-            this.bio = bio;
-            return this;
-        }
-
-        public Builder setInstitution(Institution institution) {
-            this.institution = institution;
-            return this;
-        }
-
-        public Builder  setGender(Gender gender) {
-            this.gender = gender;
-            return this;
-        }
-
-        public Builder  setInterests(List<Interest> interests) {
-            this.interests = interests;
-            return this;
-        }
-
-        public Builder  setRelationshipType(RelationshipType relationshipType) {
-            this.relationshipType = relationshipType;
-            return this;
-        }
-
-        public Builder copy(User user) {
-            this.userId = user.userId;
-            this.username = user.username;
-            this.password = user.password;
-            this.email = user.email;
-            this.firstName = user.firstName;
-            this.lastName = user.lastName;
-            this.age = user.age;
-            this.bio = user.bio;
-
-            this.institution = user.institution;
-            this.interests = user.interests;
-            this.gender = user.gender;
-            this.relationshipType = user.relationshipType;
-
-            return this;
-        }
-
-        public User build() {
-            return new User(this);
-        }
+    //Setters
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
+
+    public void setInstitution(Institution institution) {
+        this.institution = institution;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
+
+    public void setInterests(List<Interest> interests) {
+        this.interests = interests;
+    }
+
+    public void setImage(Image image) {
+        this.image = image;
+    }
+
+    public void setPreferences(Preference preferences) {
+        this.preferences = preferences;
+    }
+
+    //    public static class Builder {
+//        private Long userId;
+//        private String username;
+//        private String password;
+//        private String email;
+//        private String firstName;
+//        private String lastName;
+//        private int age;
+//        private String bio;
+//
+//        private Institution institution;
+//        private Gender gender;
+//        private List<Interest> interests;
+//        private Image image;
+//
+//        public Builder setImage(Image image) {
+//            this.image = image;
+//            return this;
+//        }
+//
+//        public Builder setUserId(Long userId) {
+//            this.userId = userId;
+//            return this;
+//        }
+//
+//        public Builder setUsername(String username) {
+//            this.username = username;
+//            return this;
+//        }
+//
+//        public Builder setPassword(String password) {
+//            this.password = password;
+//            return this;
+//        }
+//
+//        public Builder setEmail(String email) {
+//            this.email = email;
+//            return this;
+//        }
+//
+//        public Builder setFirstName(String firstName) {
+//            this.firstName = firstName;
+//            return this;
+//        }
+//
+//        public Builder setLastName(String lastName) {
+//            this.lastName = lastName;
+//            return this;
+//        }
+//
+//        public Builder setAge(int age) {
+//            this.age = age;
+//            return this;
+//        }
+//
+//        public Builder setBio(String bio) {
+//            this.bio = bio;
+//            return this;
+//        }
+//
+//        public Builder setInstitution(Institution institution) {
+//            this.institution = institution;
+//            return this;
+//        }
+//
+//        public Builder  setGender(Gender gender) {
+//            this.gender = gender;
+//            return this;
+//        }
+//
+//        public Builder  setPreferredInterests(List<Interest> interests) {
+//            this.interests = interests;
+//            return this;
+//        }
+//
+//        public Builder copy(User user) {
+//            this.userId = user.userId;
+//            this.username = user.username;
+//            this.password = user.password;
+//            this.email = user.email;
+//            this.firstName = user.firstName;
+//            this.lastName = user.lastName;
+//            this.age = user.age;
+//            this.bio = user.bio;
+//
+//            this.institution = user.institution;
+//            this.interests = user.interests;
+//            this.gender = user.gender;
+//            return this;
+//        }
+//
+//        public User build() {
+//            return new User(this);
+//        }
+//    }
 }

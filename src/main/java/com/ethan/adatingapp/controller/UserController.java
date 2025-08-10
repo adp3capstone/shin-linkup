@@ -5,6 +5,7 @@ import com.ethan.adatingapp.service.UserService;
 import com.ethan.adatingapp.util.AuthRequest;
 import com.ethan.adatingapp.util.AuthResponse;
 import com.ethan.adatingapp.util.JwtUtil;
+import com.ethan.adatingapp.util.UserDTO;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -42,8 +43,15 @@ public class UserController {
 //        String token = jwtUtil.generateToken(request.getUsername());
 
         String token = foundUser.getUserId().toString();
+        UserDTO userDTO = new UserDTO(
+                foundUser.getUserId(),
+                foundUser.getUsername(),
+                foundUser.getEmail(),
+                foundUser.getFirstName(),
+                foundUser.getLastName()
+        );
 
-        return ResponseEntity.ok(new AuthResponse(token, foundUser));
+        return ResponseEntity.ok(new AuthResponse(token, userDTO));
     }
 
     @PostMapping("/signup")
@@ -92,24 +100,14 @@ public class UserController {
         }
     }
 
-    @PutMapping("/preferences")
-    public ResponseEntity<User> updatePreferences(@RequestBody User user) {
-        User existingUser = userService.read(user.getUserId());
-
-        System.out.println("Updating preferences for user: " + existingUser);
-
-        User updatedUser = new User.Builder().copy(existingUser)
-                .setGender(user.getGender())
-                .setAge(user.getAge())
-                .setBio(user.getBio())
-                .setRelationshipType(user.getRelationshipType())
-                .setInterests(user.getInterests())
-                .setInstitution(user.getInstitution())
-                .build();
-
-        System.out.println("Updated user preferences: " + updatedUser);
-
+    @PatchMapping("/{userId}")
+    public ResponseEntity<User> updateUser(@PathVariable long userId, @RequestBody User user) {
+        User updatedUser = userService.update(user);
+        if (updatedUser != null) {
             return ResponseEntity.ok(updatedUser);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/delete")

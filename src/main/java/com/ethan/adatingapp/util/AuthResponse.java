@@ -4,9 +4,9 @@ import com.ethan.adatingapp.domain.User;
 
 public class AuthResponse {
     private String token;
-    private User user;
+    private UserDTO user;
 
-    public AuthResponse(String token,User user) {
+    public AuthResponse(String token,UserDTO user) {
         this.token = token;
         this.user = user;
     }
@@ -15,7 +15,7 @@ public class AuthResponse {
         return token;
     }
 
-    public User getUser() {
+    public UserDTO getUser() {
         return user;
     }
 }
