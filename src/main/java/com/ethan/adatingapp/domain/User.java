@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name="user")
@@ -49,7 +50,29 @@ public class User {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Preference preferences;
 
-//    private User(Builder builder) {
+    @OneToMany(mappedBy = "liker", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Like> likesGiven;
+
+    @OneToMany(mappedBy = "liked", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Like> likesReceived;
+
+    public Set<Like> getLikesGiven() {
+        return likesGiven;
+    }
+
+    public void setLikesGiven(Set<Like> likesGiven) {
+        this.likesGiven = likesGiven;
+    }
+
+    public Set<Like> getLikesReceived() {
+        return likesReceived;
+    }
+
+    public void setLikesReceived(Set<Like> likesReceived) {
+        this.likesReceived = likesReceived;
+    }
+
+    //    private User(Builder builder) {
 //        this.userId = builder.userId;
 //        this.username = builder.username;
 //        this.password = builder.password;

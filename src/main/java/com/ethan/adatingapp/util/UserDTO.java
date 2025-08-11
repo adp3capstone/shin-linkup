@@ -5,10 +5,10 @@ import com.ethan.adatingapp.domain.User;
 import com.ethan.adatingapp.domain.enums.Course;
 import com.ethan.adatingapp.domain.enums.Gender;
 import com.ethan.adatingapp.domain.enums.Interest;
-import com.ethan.adatingapp.domain.enums.RelationshipType;
 
 import java.util.Base64;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class UserDTO {
     private Long userId;
@@ -37,6 +37,10 @@ public class UserDTO {
     private int maxDistance;
     private boolean smokingPreference;
     private boolean drinkingPreference;
+
+    // Likes
+    private List<Long> likedUserIds;   // IDs of users this user liked
+    private List<Long> likedByUserIds; // IDs of users who liked this user
 
     public UserDTO() {}
 
@@ -71,9 +75,24 @@ public class UserDTO {
             this.smokingPreference = pref.isSmokingPreference();
             this.drinkingPreference = pref.isDrinkingPreference();
         }
+
+        // Map likes - convert Like entities to user IDs
+        if (user.getLikesGiven() != null) {
+            this.likedUserIds = user.getLikesGiven()
+                    .stream()
+                    .map(like -> like.getLiked().getUserId())
+                    .collect(Collectors.toList());
+        }
+
+        if (user.getLikesReceived() != null) {
+            this.likedByUserIds = user.getLikesReceived()
+                    .stream()
+                    .map(like -> like.getLiker().getUserId())
+                    .collect(Collectors.toList());
+        }
     }
 
-    // Getters and setters for all fields including preferences
+    // Getters and setters for all fields including likes and preferences
 
     public Long getUserId() {
         return userId;
@@ -208,5 +227,19 @@ public class UserDTO {
     }
     public void setDrinkingPreference(boolean drinkingPreference) {
         this.drinkingPreference = drinkingPreference;
+    }
+
+    // Likes getters/setters
+    public List<Long> getLikedUserIds() {
+        return likedUserIds;
+    }
+    public void setLikedUserIds(List<Long> likedUserIds) {
+        this.likedUserIds = likedUserIds;
+    }
+    public List<Long> getLikedByUserIds() {
+        return likedByUserIds;
+    }
+    public void setLikedByUserIds(List<Long> likedByUserIds) {
+        this.likedByUserIds = likedByUserIds;
     }
 }
