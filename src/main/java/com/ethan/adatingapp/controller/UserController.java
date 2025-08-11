@@ -1,6 +1,8 @@
 package com.ethan.adatingapp.controller;
 
+import com.ethan.adatingapp.domain.Preference;
 import com.ethan.adatingapp.domain.User;
+import com.ethan.adatingapp.service.PreferenceService;
 import com.ethan.adatingapp.service.UserService;
 import com.ethan.adatingapp.util.AuthRequest;
 import com.ethan.adatingapp.util.AuthResponse;
@@ -22,13 +24,15 @@ import java.util.List;
 @RequestMapping("/user")
 public class UserController {
     private final UserService userService;
+    private final PreferenceService preferenceService;
 
     private final JwtUtil jwtUtil;
 
     @Autowired
-    public UserController(UserService userService,
+    public UserController(UserService userService, PreferenceService preferenceService,
                           JwtUtil jwtUtil) {
         this.userService = userService;
+        this.preferenceService = preferenceService;
         this.jwtUtil = jwtUtil;
     }
 
@@ -43,13 +47,7 @@ public class UserController {
 //        String token = jwtUtil.generateToken(request.getUsername());
 
         String token = foundUser.getUserId().toString();
-        UserDTO userDTO = new UserDTO(
-                foundUser.getUserId(),
-                foundUser.getUsername(),
-                foundUser.getEmail(),
-                foundUser.getFirstName(),
-                foundUser.getLastName()
-        );
+        UserDTO userDTO = new UserDTO(foundUser);
 
         return ResponseEntity.ok(new AuthResponse(token, userDTO));
     }
@@ -91,10 +89,16 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<User> getUserById(@PathVariable long userId) {
+    public ResponseEntity<UserDTO> getUserById(@PathVariable long userId) {
         User user = userService.read(userId);
+        Preference preferences = preferenceService.findByUser(userId);
+
         if (user != null) {
-            return ResponseEntity.ok(user);
+            if (preferences != null) {
+                user.setPreferences(preferences);
+            }
+            UserDTO userDTO = new UserDTO(user);
+            return ResponseEntity.ok(userDTO);
         } else {
             return ResponseEntity.notFound().build();
         }

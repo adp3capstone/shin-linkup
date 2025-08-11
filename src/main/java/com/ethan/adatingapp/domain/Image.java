@@ -19,7 +19,7 @@ public class Image {
     private User user;
 
     @Lob
-    @Basic(fetch = FetchType.LAZY)
+    @Basic(fetch = FetchType.EAGER)
     private byte[] imageUrl;
 
     public Image(){}
@@ -40,6 +40,18 @@ public class Image {
 
     public byte[] getImageUrl() {
         return imageUrl;
+    }
+
+    public void setImageId(Long imageId) {
+        this.imageId = imageId;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setImageUrl(byte[] imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     @Override

@@ -25,7 +25,7 @@ public class Preference {
             name = "user_interests",
             joinColumns = @JoinColumn(name = "user_id")
     )
-    @Column(name = "pref_interest")
+    @Column(name = "interest")
     private List<Interest> preferredInterests;
 
     private RelationshipType relationshipType;
@@ -34,13 +34,13 @@ public class Preference {
     private int maxAge;
     private Gender preferredGender;
 
-    @ElementCollection(targetClass = Interest.class)
+    @ElementCollection(targetClass = Course.class)
     @Enumerated(EnumType.STRING)
     @CollectionTable(
             name = "user_courses",
             joinColumns = @JoinColumn(name = "user_id")
     )
-    @Column(name = "pref_course", length = 100)
+    @Column(name = "course",length = 50)
     private List<Course> preferredCourses;
 
     private int maxDistance;
@@ -133,5 +133,22 @@ public class Preference {
 
     public void setDrinkingPreference(boolean drinkingPreference) {
         this.drinkingPreference = drinkingPreference;
+    }
+
+    @Override
+    public String toString() {
+        return "Preference{" +
+                "preferenceId=" + preferenceId +
+                ", user=" + user +
+                ", preferredInterests=" + preferredInterests +
+                ", relationshipType=" + relationshipType +
+                ", minAge=" + minAge +
+                ", maxAge=" + maxAge +
+                ", preferredGender=" + preferredGender +
+                ", preferredCourses=" + preferredCourses +
+                ", maxDistance=" + maxDistance +
+                ", smokingPreference=" + smokingPreference +
+                ", drinkingPreference=" + drinkingPreference +
+                '}';
     }
 }

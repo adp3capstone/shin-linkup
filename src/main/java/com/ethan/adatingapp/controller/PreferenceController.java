@@ -4,6 +4,7 @@ import com.ethan.adatingapp.domain.Preference;
 import com.ethan.adatingapp.domain.User;
 import com.ethan.adatingapp.service.PreferenceService;
 import com.ethan.adatingapp.service.UserService;
+import com.ethan.adatingapp.util.PreferenceDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,11 +34,12 @@ public class PreferenceController {
         return ResponseEntity.ok(saved);
     }
 
-    @GetMapping
-    public ResponseEntity<Preference> getPreference(@RequestParam Long id) {
+    @GetMapping("/{id}")
+    public ResponseEntity<PreferenceDTO> getPreference(@PathVariable Long id) {
         Preference preference = preferenceService.read(id);
         if (preference != null) {
-            return ResponseEntity.ok(preference);
+            PreferenceDTO dto = new PreferenceDTO(preference);
+            return ResponseEntity.ok(dto);
         } else {
             return ResponseEntity.notFound().build();
         }

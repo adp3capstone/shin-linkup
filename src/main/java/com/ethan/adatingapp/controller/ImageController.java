@@ -6,6 +6,8 @@ Date:10 July 2025
 */
 
 import com.ethan.adatingapp.domain.User;
+import com.ethan.adatingapp.service.UserService;
+import com.ethan.adatingapp.util.ImageDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,17 +21,20 @@ import java.util.List;
 @RequestMapping("/image")
 public class ImageController {
     private final ImageService imageService;
+    private final UserService userService;
 
     @Autowired
-    public ImageController(ImageService imageService) {
+    public ImageController(ImageService imageService, UserService userService) {
         this.imageService = imageService;
+        this.userService = userService;
     }
 
     @GetMapping("/{imageId}")
-    public ResponseEntity<Image> getImageById(@PathVariable long imageId) {
+    public ResponseEntity<ImageDTO> getImageById(@PathVariable long imageId) {
         Image image = imageService.read(imageId);
         if (image != null) {
-            return ResponseEntity.ok(image);
+            ImageDTO imageDTO = new ImageDTO(image.getImageId(), image.getUser().getUserId(), image.getImageUrl());
+            return ResponseEntity.ok(imageDTO);
         } else {
             return ResponseEntity.notFound().build();
         }
@@ -43,6 +48,15 @@ public class ImageController {
                     .status(409)
                     .body(null); // Conflict: User already has an image
         }
+
+        Long userId = image.getUser().getUserId();
+        User user = userService.read(userId);
+        if (user == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        image.setUser(user);
+
         Image createdImage = imageService.create(image);
         return ResponseEntity
                 .created(URI.create("/image/"+ createdImage.getImageId()))
