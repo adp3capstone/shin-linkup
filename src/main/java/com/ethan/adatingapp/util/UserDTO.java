@@ -20,6 +20,7 @@ public class UserDTO {
     private String bio;
     private String institution;
     private String gender;
+    private String course;
 
     private List<Interest> interests;
 
@@ -39,7 +40,6 @@ public class UserDTO {
 
     public UserDTO() {}
 
-    // Constructor from User entity (extract what you want)
     public UserDTO(User user) {
         this.userId = user.getUserId();
         this.firstName = user.getFirstName();
@@ -50,16 +50,16 @@ public class UserDTO {
         this.bio = user.getBio();
         this.institution = user.getInstitution() != null ? user.getInstitution().name() : null;
         this.gender = user.getGender() != null ? user.getGender().name() : null;
+        this.course = user.getCourse() != null ? user.getCourse().name() : null;
         this.interests = user.getInterests();
 
-        // Image: convert byte[] to base64 string
         if (user.getImage() != null && user.getImage().getImageUrl() != null) {
             this.imageBase64 = Base64.getEncoder().encodeToString(user.getImage().getImageUrl());
         }
 
-        // Preferences
-        if (user.getPreferences() != null) {
-            Preference pref = user.getPreferences();
+        // Map preferences if available
+        Preference pref = user.getPreferences();
+        if (pref != null) {
             this.preferenceId = pref.getPreferenceId();
             this.preferredInterests = pref.getPreferredInterests();
             this.relationshipType = pref.getRelationshipType() != null ? pref.getRelationshipType().name() : null;
@@ -73,7 +73,7 @@ public class UserDTO {
         }
     }
 
-    // Getters and setters for all fields below
+    // Getters and setters for all fields including preferences
 
     public Long getUserId() {
         return userId;
@@ -129,6 +129,12 @@ public class UserDTO {
     public void setGender(String gender) {
         this.gender = gender;
     }
+    public String getCourse() {
+        return course;
+    }
+    public void setCourse(String course) {
+        this.course = course;
+    }
     public List<Interest> getInterests() {
         return interests;
     }
@@ -141,6 +147,8 @@ public class UserDTO {
     public void setImageBase64(String imageBase64) {
         this.imageBase64 = imageBase64;
     }
+
+    // Preference getters/setters
     public Long getPreferenceId() {
         return preferenceId;
     }

@@ -2,10 +2,12 @@ package com.ethan.adatingapp.service;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.ethan.adatingapp.domain.User;
+import com.ethan.adatingapp.domain.enums.*;
 import com.ethan.adatingapp.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -44,5 +46,25 @@ public class UserService {
 
     public void delete(Long id) {
         userRepository.deleteById(id);
+    }
+
+    public List<User> findAllByCourse(Course course) {
+        return userRepository.findAllByCourse(course);
+    }
+
+    public List<User> findAllByInstitution(Institution institution) {
+        return userRepository.findAllByInstitution(institution);
+    }
+
+    public List<User> findAllByAgeBetween(int minAge, int maxAge) {
+        return userRepository.findAllByAgeBetween(minAge, maxAge);
+    }
+
+    public List<User> findAllByGender(Gender gender) {
+        return userRepository.findAllByGender(gender);
+    }
+
+    public List<User> findAllByInterestsIn(Collection<Interest> interests) {
+        return userRepository.findAllByInterestsIn(interests);
     }
 }

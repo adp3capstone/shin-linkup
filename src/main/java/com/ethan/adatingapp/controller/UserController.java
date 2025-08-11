@@ -2,6 +2,7 @@ package com.ethan.adatingapp.controller;
 
 import com.ethan.adatingapp.domain.Preference;
 import com.ethan.adatingapp.domain.User;
+import com.ethan.adatingapp.domain.enums.*;
 import com.ethan.adatingapp.service.PreferenceService;
 import com.ethan.adatingapp.service.UserService;
 import com.ethan.adatingapp.util.AuthRequest;
@@ -124,5 +125,91 @@ public class UserController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    //Users Filters for feed:
+    @GetMapping("/by-course")
+    public ResponseEntity<List<UserDTO>> getUsersByCourse(@RequestParam Course course) {
+        List<User> users = userService.findAllByCourse(course);
+        if (users.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        List<UserDTO> userDTOs = new ArrayList<>();
+        for (User user : users) {
+            Preference preferences = preferenceService.findByUser(user.getUserId());
+            if (preferences != null) {
+                user.setPreferences(preferences);
+            }
+            userDTOs.add(new UserDTO(user));
+        }
+        return ResponseEntity.ok(userDTOs);
+    }
+
+    @GetMapping("/by-institution")
+    public ResponseEntity<List<UserDTO>> getUsersByInstitution(@RequestParam Institution institution) {
+        List<User> users = userService.findAllByInstitution(institution);
+        if (users.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        List<UserDTO> userDTOs = new ArrayList<>();
+        for (User user : users) {
+            Preference preferences = preferenceService.findByUser(user.getUserId());
+            if (preferences != null) {
+                user.setPreferences(preferences);
+            }
+            userDTOs.add(new UserDTO(user));
+        }
+        return ResponseEntity.ok(userDTOs);
+    }
+
+    @GetMapping("/by-age")
+    public ResponseEntity<List<UserDTO>> getUsersByAgeRange(@RequestParam int minAge, @RequestParam int maxAge) {
+        List<User> users = userService.findAllByAgeBetween(minAge, maxAge);
+        if (users.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        List<UserDTO> userDTOs = new ArrayList<>();
+        for (User user : users) {
+            Preference preferences = preferenceService.findByUser(user.getUserId());
+            if (preferences != null) {
+                user.setPreferences(preferences);
+            }
+            userDTOs.add(new UserDTO(user));
+        }
+        return ResponseEntity.ok(userDTOs);
+    }
+
+    @GetMapping("/by-gender")
+    public ResponseEntity<List<UserDTO>> getUsersByGender(@RequestParam Gender gender) {
+        List<User> users = userService.findAllByGender(gender);
+        if (users.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        List<UserDTO> userDTOs = new ArrayList<>();
+        for (User user : users) {
+            Preference preferences = preferenceService.findByUser(user.getUserId());
+            if (preferences != null) {
+                user.setPreferences(preferences);
+            }
+            userDTOs.add(new UserDTO(user));
+        }
+        return ResponseEntity.ok(userDTOs);
+    }
+
+    @GetMapping("/by-interests")
+    public ResponseEntity<List<UserDTO>> getUsersByInterests(@RequestParam List<Interest> interests) {
+        List<User> users = userService.findAllByInterestsIn(interests);
+        if (users.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        List<UserDTO> userDTOs = new ArrayList<>();
+        for (User user : users) {
+            Preference preferences = preferenceService.findByUser(user.getUserId());
+            if (preferences != null) {
+                user.setPreferences(preferences);
+            }
+            userDTOs.add(new UserDTO(user));
+        }
+        return ResponseEntity.ok(userDTOs);
     }
 }

@@ -1,9 +1,6 @@
 package com.ethan.adatingapp.domain;
 
-import com.ethan.adatingapp.domain.enums.Gender;
-import com.ethan.adatingapp.domain.enums.Institution;
-import com.ethan.adatingapp.domain.enums.Interest;
-import com.ethan.adatingapp.domain.enums.RelationshipType;
+import com.ethan.adatingapp.domain.enums.*;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
@@ -35,6 +32,7 @@ public class User {
 
     private Institution institution;
     private Gender gender;
+    private Course course;
 
     @ElementCollection(targetClass = Interest.class)
     @Enumerated(EnumType.STRING)
@@ -70,6 +68,14 @@ public class User {
 
     public User() {
 
+    }
+
+    public Course getCourse() {
+        return course;
+    }
+
+    public void setCourse(Course course) {
+        this.course = course;
     }
 
     public Long getUserId() {
@@ -140,6 +146,7 @@ public class User {
                 ", gender=" + gender +
                 ", interests=" + interests +
                 ", image=" + image +
+                ",course=" + course +
                 '}';
     }
 
