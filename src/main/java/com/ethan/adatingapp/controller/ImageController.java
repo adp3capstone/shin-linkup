@@ -19,6 +19,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/image")
+@CrossOrigin(origins = "http://localhost:8081")
 public class ImageController {
     private final ImageService imageService;
     private final UserService userService;

@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class LikeService {
@@ -21,9 +20,9 @@ public class LikeService {
 
     // Create a like (userA likes userB)
     public Like addLike(User liker, User liked) {
-        Optional<Like> existingLike = likeRepository.findByLikerIdAndLikedId(liker.getUserId(), liked.getUserId());
-        if (existingLike.isPresent()) {
-            return existingLike.get(); // or throw exception or handle as needed
+        Like existingLike = likeRepository.findByLikerUserIdAndLikedUserId(liker.getUserId(), liked.getUserId());
+        if (existingLike != null) {
+            return existingLike; // or throw exception or handle as needed
         }
 
         Like like = new Like(liker, liked);
@@ -32,9 +31,9 @@ public class LikeService {
 
     // Remove a like
     public boolean removeLike(User liker, User liked) {
-        Optional<Like> existingLike = likeRepository.findByLikerIdAndLikedId(liker.getUserId(), liked.getUserId());
-        if (existingLike.isPresent()) {
-            likeRepository.delete(existingLike.get());
+        Like existingLike = likeRepository.findByLikerUserIdAndLikedUserId(liker.getUserId(), liked.getUserId());
+        if (existingLike != null) {
+            likeRepository.delete(existingLike);
             return true;
         }
         return false;
@@ -42,7 +41,7 @@ public class LikeService {
 
     // Check if user A likes user B
     public boolean isLiked(User liker, User liked) {
-        return likeRepository.existsByLikerIdAndLikedId(liker.getUserId(), liked.getUserId());
+        return likeRepository.existsByLikerUserIdAndLikedUserId(liker.getUserId(), liked.getUserId());
     }
 
     // Get all likes given by a specific user

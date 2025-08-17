@@ -12,9 +12,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/likes")
+@CrossOrigin(origins = "http://localhost:8081")
 public class LikeController {
 
     private final LikeService likeService;
+
     private final UserService userService;
 
     @Autowired
