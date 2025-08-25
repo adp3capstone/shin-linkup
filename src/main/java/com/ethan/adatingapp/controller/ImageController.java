@@ -10,12 +10,14 @@ import com.ethan.adatingapp.service.UserService;
 import com.ethan.adatingapp.util.ImageDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import com.ethan.adatingapp.domain.Image;
 import com.ethan.adatingapp.service.ImageService;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/image")
@@ -64,7 +66,36 @@ public class ImageController {
                 .body(createdImage);
     }
 
-    @PutMapping
+    @PatchMapping("/update")
+    @Transactional
+    public ResponseEntity<ImageDTO> patchImage(@RequestBody Map<String, Object> payload) {
+        // Extract userId and new image info from request body
+        Long userId = Long.valueOf(payload.get("userId").toString());
+        String newImageUrl = payload.containsKey("imageUrl") ? (String) payload.get("imageUrl") : null;
+        String newBase64 = payload.containsKey("base64String") ? (String) payload.get("base64String") : null;
+
+        // Find existing image for the user
+        List<Image> existingImages = imageService.findByUserId(userId);
+        if (existingImages.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Image existingImage = existingImages.get(0); // assume 1 image per user
+
+        // Update only the fields provided
+        if (newImageUrl != null) {
+            existingImage.setImageUrl(newImageUrl.getBytes());
+        }
+        if (newBase64 != null) {
+            existingImage.setImageUrl(newBase64.getBytes());
+        }
+
+        Image updatedImage = imageService.update(existingImage);
+        ImageDTO dto = new ImageDTO(updatedImage.getUser().getUserId(), updatedImage.getImageId(), updatedImage.getImageUrl());
+        return ResponseEntity.ok(dto);
+    }
+
+    @PatchMapping
     public ResponseEntity<Image> updateImage(@RequestBody Image image) {
         Image updatedImage = imageService.update(image);
         if (updatedImage != null) {

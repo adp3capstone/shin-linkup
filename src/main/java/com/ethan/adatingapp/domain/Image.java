@@ -1,4 +1,5 @@
 package com.ethan.adatingapp.domain;
+
 /* Image.java
 Image model class
 Author: Ethan Le Roux (222622172)
