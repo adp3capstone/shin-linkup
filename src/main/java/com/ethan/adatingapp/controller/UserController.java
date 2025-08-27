@@ -66,8 +66,10 @@ public class UserController {
             errors.add("Last name is required");
         }
 
-        if (user.getEmail() == null) {
+        if (user.getEmail() == null || user.getEmail().isBlank()) {
             errors.add("A valid email is required");
+        } else if (userService.findByEmail(user.getEmail()) != null) {
+            errors.add("Email is already in use");
         }
 
         if (user.getUsername() == null || user.getUsername().isBlank()) {

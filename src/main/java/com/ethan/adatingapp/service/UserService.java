@@ -67,4 +67,8 @@ public class UserService {
     public List<User> findAllByInterestsIn(Collection<Interest> interests) {
         return userRepository.findAllByInterestsIn(interests);
     }
+
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
 }
