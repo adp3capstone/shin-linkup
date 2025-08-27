@@ -9,15 +9,12 @@ import com.ethan.adatingapp.util.AuthRequest;
 import com.ethan.adatingapp.util.AuthResponse;
 import com.ethan.adatingapp.util.JwtUtil;
 import com.ethan.adatingapp.util.UserDTO;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +24,6 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
     private final PreferenceService preferenceService;
-
     private final JwtUtil jwtUtil;
 
     @Autowired
@@ -38,6 +34,7 @@ public class UserController {
         this.jwtUtil = jwtUtil;
     }
 
+    
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
         User foundUser = userService.findByUsernameAndPassword(request.getUsername(), request.getPassword());
@@ -45,8 +42,6 @@ public class UserController {
         if (foundUser == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-
-//        String token = jwtUtil.generateToken(request.getUsername());
 
         String token = foundUser.getUserId().toString();
         UserDTO userDTO = new UserDTO(foundUser);
@@ -61,25 +56,20 @@ public class UserController {
         if (user.getFirstName() == null || user.getFirstName().isBlank()) {
             errors.add("First name is required");
         }
-
         if (user.getLastName() == null || user.getLastName().isBlank()) {
             errors.add("Last name is required");
         }
-
         if (user.getEmail() == null || user.getEmail().isBlank()) {
             errors.add("A valid email is required");
         } else if (userService.findByEmail(user.getEmail()) != null) {
             errors.add("Email is already in use");
         }
-
         if (user.getUsername() == null || user.getUsername().isBlank()) {
             errors.add("Username is required");
         }
-
         if (user.getPassword() == null || user.getPassword().isBlank()) {
             errors.add("Password is required");
         }
-
         if (user.getAge() < 1) {
             errors.add("Age must be at least 1");
         }
@@ -92,6 +82,7 @@ public class UserController {
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
 
+    // ---------------- USERS ----------------
     @GetMapping("/{userId}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable long userId) {
         User user = userService.read(userId);
@@ -118,19 +109,37 @@ public class UserController {
         }
     }
 
-    @DeleteMapping("/delete")
-    public ResponseEntity<Void> deleteImage(@RequestParam long userId) {
-        userService.delete(userId);
-        if (userService.read(userId) != null) {
-            return ResponseEntity
-                    .status(409)
-                    .build();
-        } else {
+    
+    // Schedules deletion in 5 days
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<String> scheduleUserDeletion(@PathVariable long userId) {
+        User user = userService.read(userId);
+        if (user == null) {
             return ResponseEntity.notFound().build();
         }
+
+        LocalDateTime deletionDate = LocalDateTime.now().plusDays(5);
+        user.setScheduledDeletionDate(deletionDate);
+        userService.update(user);
+
+        return ResponseEntity.ok("Account scheduled for deletion on: " + deletionDate.toString());
     }
 
-    //Users Filters for feed:
+   
+    @PostMapping("/{userId}/cancel-deletion")
+    public ResponseEntity<String> cancelUserDeletion(@PathVariable long userId) {
+        User user = userService.read(userId);
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        user.setScheduledDeletionDate(null);
+        userService.update(user);
+
+        return ResponseEntity.ok("Account deletion cancelled.");
+    }
+
+   
     @GetMapping("/by-course")
     public ResponseEntity<List<UserDTO>> getUsersByCourse(@RequestParam Course course) {
         List<User> users = userService.findAllByCourse(course);
