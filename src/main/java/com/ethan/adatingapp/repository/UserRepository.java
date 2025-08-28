@@ -22,6 +22,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findAllByGender(Gender gender);
     List<User> findAllByInterestsIn(Collection<Interest> interests);
 
+    User findByEmail(String email);
     // For scheduled deletion
     List<User> findAllByDeletionDueDateBefore(LocalDateTime time);
 }
