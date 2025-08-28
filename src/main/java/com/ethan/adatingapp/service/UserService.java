@@ -79,4 +79,7 @@ public class UserService {
     public List<User> findUsersForDeletion(LocalDateTime now) {
         return userRepository.findAllByDeletionDueDateBefore(now);
     }
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
 }
