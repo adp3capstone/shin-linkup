@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -17,11 +18,13 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
+    @Column(name = "deletion_due_date")
+    private LocalDateTime deletionDueDate;
+
     private String firstName;
 
     private String lastName;
 
-    @Column(unique=true)
     private String email;
 
     private String username;
@@ -94,6 +97,10 @@ public class User {
 
     }
 
+    public LocalDateTime getDeletionDueDate() {
+        return deletionDueDate;
+    }
+
     public Course getCourse() {
         return course;
     }
@@ -155,10 +162,12 @@ public class User {
         return preferences;
     }
 
+
     @Override
     public String toString() {
         return "User{" +
                 "userId=" + userId +
+                ", deletionDueDate=" + deletionDueDate +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
@@ -168,9 +177,12 @@ public class User {
                 ", bio='" + bio + '\'' +
                 ", institution=" + institution +
                 ", gender=" + gender +
+                ", course=" + course +
                 ", interests=" + interests +
                 ", image=" + image +
-                ",course=" + course +
+                ", preferences=" + preferences +
+                ", likesGiven=" + likesGiven +
+                ", likesReceived=" + likesReceived +
                 '}';
     }
 
@@ -227,7 +239,10 @@ public class User {
         this.preferences = preferences;
     }
 
-    //    public static class Builder {
+    public void setDeletionDueDate(LocalDateTime deletionDueDate) {
+        this.deletionDueDate = deletionDueDate;
+    }
+//    public static class Builder {
 //        private Long userId;
 //        private String username;
 //        private String password;
