@@ -18,6 +18,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -129,7 +130,40 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
     }
+    @DeleteMapping("/{userId}/schedule-deletion")
+    public ResponseEntity<String> scheduleUserDeletion(@PathVariable long userId) {
+        User user = userService.read(userId);
+        if (user == null) return ResponseEntity.notFound().build();
 
+        if (user.getDeletionDueDate() != null) {
+            return ResponseEntity.badRequest().body("Deletion already scheduled for " + user.getDeletionDueDate());
+        }
+
+        user.setDeletionDueDate(LocalDateTime.now().plusDays(5));
+        userService.update(user);
+
+        return ResponseEntity.ok("User account scheduled for deletion.");
+    }
+
+    @PostMapping("/{userId}/cancel-deletion")
+    public ResponseEntity<String> cancelUserDeletion(@PathVariable long userId) {
+        User user = userService.read(userId);
+        if (user == null) return ResponseEntity.notFound().build();
+
+        if (user.getDeletionDueDate() == null) {
+            return ResponseEntity.badRequest().body("No scheduled deletion found.");
+        }
+
+        if (user.getDeletionDueDate().isBefore(LocalDateTime.now())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("Deletion date has already passed.");
+        }
+
+        user.setDeletionDueDate(null);
+        userService.update(user);
+
+        return ResponseEntity.ok("User deletion cancelled.");
+    }
     //Users Filters for feed:
     @GetMapping("/by-course")
     public ResponseEntity<List<UserDTO>> getUsersByCourse(@RequestParam Course course) {
