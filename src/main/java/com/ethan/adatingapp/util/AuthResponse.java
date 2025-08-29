@@ -2,6 +2,7 @@ package com.ethan.adatingapp.util;
 
 import com.ethan.adatingapp.domain.User;
 
+//what the backend sends to the client after login/signup
 public class AuthResponse {
     private String token;
     private UserDTO user;
