@@ -40,7 +40,7 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
-        User foundUser = userService.findByUsernameAndPassword(request.getUsername(), request.getPassword());
+        User foundUser = userService.login(request.getEmail(), request.getPassword());
 
         if (foundUser == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

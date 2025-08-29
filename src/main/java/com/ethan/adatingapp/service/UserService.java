@@ -21,15 +21,15 @@ public class UserService {
 
     public User create(User user) {
         //Encrypt password before saving
-//        String encryptedPassword = BCrypt.withDefaults()
-//                .hashToString(12, user.getPassword().toCharArray());
-//
-//        User encryptedUser = new User.Builder()
-//                .copy(user)
-//                .setPassword(encryptedPassword)
-//                .build();
+        String encryptedPassword = BCrypt.withDefaults()
+                .hashToString(12, user.getPassword().toCharArray());
 
-        return userRepository.save(user);
+        User encryptedUser = new User.Builder()
+                .copy(user)
+                .setPassword(encryptedPassword)
+                .build();
+
+        return userRepository.save(encryptedUser);
     }
 
     public User read(Long id) {
@@ -70,5 +70,18 @@ public class UserService {
 
     public User findByEmail(String email) {
         return userRepository.findByEmail(email);
+    }
+
+    public User login(String email, String rawPassword) {
+        User user = userRepository.findByEmail(email);
+        if (user == null) return null;
+
+        // Verify password against BCrypt hash
+        if (BCrypt.verifyer().verify(rawPassword.toCharArray(), user.getPassword()).verified) {
+            return user;
+        }
+        return null;
+
+
     }
 }
