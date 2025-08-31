@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -17,11 +18,13 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
+    @Column(name = "deletion_due_date")
+    private LocalDateTime deletionDueDate;
+
     private String firstName;
 
     private String lastName;
 
-    @Column(unique=true)
     private String email;
 
     private String username;
@@ -94,6 +97,10 @@ public class User {
 
     }
 
+    public LocalDateTime getDeletionDueDate() {
+        return deletionDueDate;
+    }
+
     public Course getCourse() {
         return course;
     }
@@ -155,10 +162,12 @@ public class User {
         return preferences;
     }
 
+
     @Override
     public String toString() {
         return "User{" +
                 "userId=" + userId +
+                ", deletionDueDate=" + deletionDueDate +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
@@ -168,9 +177,12 @@ public class User {
                 ", bio='" + bio + '\'' +
                 ", institution=" + institution +
                 ", gender=" + gender +
+                ", course=" + course +
                 ", interests=" + interests +
                 ", image=" + image +
-                ",course=" + course +
+                ", preferences=" + preferences +
+                ", likesGiven=" + likesGiven +
+                ", likesReceived=" + likesReceived +
                 '}';
     }
 
@@ -226,100 +238,8 @@ public class User {
     public void setPreferences(Preference preferences) {
         this.preferences = preferences;
     }
-
-        public static class Builder {
-        private Long userId;
-        private String username;
-        private String password;
-        private String email;
-        private String firstName;
-        private String lastName;
-        private int age;
-        private String bio;
-
-        private Institution institution;
-        private Gender gender;
-        private List<Interest> interests;
-        private Image image;
-
-        public Builder setImage(Image image) {
-            this.image = image;
-            return this;
-        }
-
-        public Builder setUserId(Long userId) {
-            this.userId = userId;
-            return this;
-        }
-
-        public Builder setUsername(String username) {
-            this.username = username;
-            return this;
-        }
-
-        public Builder setPassword(String password) {
-            this.password = password;
-            return this;
-        }
-
-        public Builder setEmail(String email) {
-            this.email = email;
-            return this;
-        }
-
-        public Builder setFirstName(String firstName) {
-            this.firstName = firstName;
-            return this;
-        }
-
-        public Builder setLastName(String lastName) {
-            this.lastName = lastName;
-            return this;
-        }
-
-        public Builder setAge(int age) {
-            this.age = age;
-            return this;
-        }
-
-        public Builder setBio(String bio) {
-            this.bio = bio;
-            return this;
-        }
-
-        public Builder setInstitution(Institution institution) {
-            this.institution = institution;
-            return this;
-        }
-
-        public Builder  setGender(Gender gender) {
-            this.gender = gender;
-            return this;
-        }
-
-        public Builder  setPreferredInterests(List<Interest> interests) {
-            this.interests = interests;
-            return this;
-        }
-
-        public Builder copy(User user) {
-            this.userId = user.userId;
-            this.username = user.username;
-            this.password = user.password;
-            this.email = user.email;
-            this.firstName = user.firstName;
-            this.lastName = user.lastName;
-            this.age = user.age;
-            this.bio = user.bio;
-
-            this.institution = user.institution;
-            this.interests = user.interests;
-            this.gender = user.gender;
-            return this;
-        }
-
-        public User build() {
-            return new User(this);
-        }
+  
+    public void setDeletionDueDate(LocalDateTime deletionDueDate) {
+        this.deletionDueDate = deletionDueDate;
     }
 }

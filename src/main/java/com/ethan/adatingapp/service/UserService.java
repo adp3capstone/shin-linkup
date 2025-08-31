@@ -1,5 +1,4 @@
 package com.ethan.adatingapp.service;
-
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.ethan.adatingapp.domain.User;
 import com.ethan.adatingapp.domain.enums.*;
@@ -7,8 +6,10 @@ import com.ethan.adatingapp.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -20,16 +21,10 @@ public class UserService {
     }
 
     public User create(User user) {
-        //Encrypt password before saving
         String encryptedPassword = BCrypt.withDefaults()
                 .hashToString(12, user.getPassword().toCharArray());
-
-        User encryptedUser = new User.Builder()
-                .copy(user)
-                .setPassword(encryptedPassword)
-                .build();
-
-        return userRepository.save(encryptedUser);
+        user.setPassword(encryptedPassword);
+        return userRepository.save(user);
     }
 
     public User read(Long id) {
@@ -37,15 +32,28 @@ public class UserService {
     }
 
     public User findByUsernameAndPassword(String username, String password) {
-        return userRepository.findByUsernameAndPassword(username, password);
+        User user = userRepository.findByUsername(username);
+        if (user != null) {
+            BCrypt.Result result = BCrypt.verifyer().verify(password.toCharArray(), user.getPassword());
+            if (result.verified) {
+                return user;
+            }
+        }
+        return null;
     }
 
     public User update(User user) {
         return userRepository.save(user);
     }
 
-    public void delete(Long id) {
-        userRepository.deleteById(id);
+    public boolean delete(long userId) {
+        Optional<User> userOpt = userRepository.findById(userId);
+        if (userOpt.isPresent()) {
+            userRepository.deleteById(userId);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public List<User> findAllByCourse(Course course) {
@@ -68,6 +76,9 @@ public class UserService {
         return userRepository.findAllByInterestsIn(interests);
     }
 
+    public List<User> findUsersForDeletion(LocalDateTime now) {
+        return userRepository.findAllByDeletionDueDateBefore(now);
+    }
     public User findByEmail(String email) {
         return userRepository.findByEmail(email);
     }
