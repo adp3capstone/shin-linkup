@@ -82,4 +82,17 @@ public class UserService {
     public User findByEmail(String email) {
         return userRepository.findByEmail(email);
     }
+
+    public User login(String email, String rawPassword) {
+        User user = userRepository.findByEmail(email);
+        if (user == null) return null;
+
+        // Verify password against BCrypt hash
+        if (BCrypt.verifyer().verify(rawPassword.toCharArray(), user.getPassword()).verified) {
+            return user;
+        }
+        return null;
+
+
+    }
 }
