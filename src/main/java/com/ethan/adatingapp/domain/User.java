@@ -76,22 +76,22 @@ public class User {
         this.likesReceived = likesReceived;
     }
 
-    //    private User(Builder builder) {
-//        this.userId = builder.userId;
-//        this.username = builder.username;
-//        this.password = builder.password;
-//        this.email = builder.email;
-//        this.firstName = builder.firstName;
-//        this.lastName = builder.lastName;
-//        this.age = builder.age;
-//        this.bio = builder.bio;
-//
-//        this.institution = builder.institution;
-//        this.gender = builder.gender;
-//        this.interests = builder.interests;
-//
-//        this.image = builder.image;
-//    }
+        private User(Builder builder) {
+        this.userId = builder.userId;
+        this.username = builder.username;
+        this.password = builder.password;
+        this.email = builder.email;
+        this.firstName = builder.firstName;
+        this.lastName = builder.lastName;
+        this.age = builder.age;
+        this.bio = builder.bio;
+
+        this.institution = builder.institution;
+        this.gender = builder.gender;
+        this.interests = builder.interests;
+
+        this.image = builder.image;
+    }
 
     public User() {
 
@@ -238,103 +238,8 @@ public class User {
     public void setPreferences(Preference preferences) {
         this.preferences = preferences;
     }
-
+  
     public void setDeletionDueDate(LocalDateTime deletionDueDate) {
         this.deletionDueDate = deletionDueDate;
     }
-//    public static class Builder {
-//        private Long userId;
-//        private String username;
-//        private String password;
-//        private String email;
-//        private String firstName;
-//        private String lastName;
-//        private int age;
-//        private String bio;
-//
-//        private Institution institution;
-//        private Gender gender;
-//        private List<Interest> interests;
-//        private Image image;
-//
-//        public Builder setImage(Image image) {
-//            this.image = image;
-//            return this;
-//        }
-//
-//        public Builder setUserId(Long userId) {
-//            this.userId = userId;
-//            return this;
-//        }
-//
-//        public Builder setUsername(String username) {
-//            this.username = username;
-//            return this;
-//        }
-//
-//        public Builder setPassword(String password) {
-//            this.password = password;
-//            return this;
-//        }
-//
-//        public Builder setEmail(String email) {
-//            this.email = email;
-//            return this;
-//        }
-//
-//        public Builder setFirstName(String firstName) {
-//            this.firstName = firstName;
-//            return this;
-//        }
-//
-//        public Builder setLastName(String lastName) {
-//            this.lastName = lastName;
-//            return this;
-//        }
-//
-//        public Builder setAge(int age) {
-//            this.age = age;
-//            return this;
-//        }
-//
-//        public Builder setBio(String bio) {
-//            this.bio = bio;
-//            return this;
-//        }
-//
-//        public Builder setInstitution(Institution institution) {
-//            this.institution = institution;
-//            return this;
-//        }
-//
-//        public Builder  setGender(Gender gender) {
-//            this.gender = gender;
-//            return this;
-//        }
-//
-//        public Builder  setPreferredInterests(List<Interest> interests) {
-//            this.interests = interests;
-//            return this;
-//        }
-//
-//        public Builder copy(User user) {
-//            this.userId = user.userId;
-//            this.username = user.username;
-//            this.password = user.password;
-//            this.email = user.email;
-//            this.firstName = user.firstName;
-//            this.lastName = user.lastName;
-//            this.age = user.age;
-//            this.bio = user.bio;
-//
-//            this.institution = user.institution;
-//            this.interests = user.interests;
-//            this.gender = user.gender;
-//            return this;
-//        }
-//
-//        public User build() {
-//            return new User(this);
-//        }
-//    }
 }
