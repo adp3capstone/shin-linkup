@@ -10,7 +10,7 @@ public class EmergencyContact {
     private Long emergencyContactId;
 
     @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id", unique = true, nullable = false)
+    @JoinColumn(name = "user_id", unique = true, nullable = true)
     private User user;
 
     @Column(nullable = false)

@@ -32,16 +32,18 @@ public class EmergencyContactController {
     // Create EmergencyContact
     @PostMapping("/create")
     public ResponseEntity<?> createEmergencyContact(@RequestBody EmergencyContact contact) {
-        if (contact.getUser() == null || contact.getUser().getUserId() == null) {
-            return ResponseEntity.badRequest().body("User is required for Emergency Contact");
+        // If the client supplied a userId, validate it and attach the real User
+        if (contact.getUser() != null && contact.getUser().getUserId() != null) {
+            User user = userService.read(contact.getUser().getUserId());
+            if (user == null) {
+                return ResponseEntity.badRequest().body("User does not exist");
+            }
+            contact.setUser(user);
+        } else {
+            // no user supplied — persist contact with user = null
+            contact.setUser(null);
         }
 
-        User user = userService.read(contact.getUser().getUserId());
-        if (user == null) {
-            return ResponseEntity.badRequest().body("User does not exist");
-        }
-
-        contact.setUser(user); // Ensure proper user association
         EmergencyContact created = emergencyContactService.create(contact);
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
