@@ -5,6 +5,8 @@ Date:10 July 2025
 */
 
 
+import com.ethan.adatingapp.domain.UpdateProfile;
+import com.ethan.adatingapp.service.UpdateProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,4 +44,4 @@ import org.springframework.web.bind.annotation.*;
         }
     }
 
-}
+

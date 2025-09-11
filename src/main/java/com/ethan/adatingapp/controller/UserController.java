@@ -119,17 +119,16 @@ public class UserController {
         }
     }
 
-    @DeleteMapping("/delete")
-    public ResponseEntity<Void> deleteImage(@RequestParam long userId) {
-        userService.delete(userId);
-        if (userService.read(userId) != null) {
-            return ResponseEntity
-                    .status(409)
-                    .build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+   @DeleteMapping("/{userId}")
+public ResponseEntity<String> deleteUser(@PathVariable long userId) {
+    boolean deleted = userService.delete(userId);
+    if (deleted) {
+        return ResponseEntity.ok("User deleted successfully.");
+    } else {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
     }
+}
+
     @DeleteMapping("/{userId}/schedule-deletion")
     public ResponseEntity<String> scheduleUserDeletion(@PathVariable long userId) {
         User user = userService.read(userId);
