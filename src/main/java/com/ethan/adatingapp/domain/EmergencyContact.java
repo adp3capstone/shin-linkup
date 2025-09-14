@@ -1,7 +1,11 @@
 package com.ethan.adatingapp.domain;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
+@Setter
+@Getter
 @Entity
 public class EmergencyContact {
     @Id
@@ -19,38 +23,6 @@ public class EmergencyContact {
         this.user = builder.user;
         this.name = builder.name;
         this.phoneNumber = builder.phoneNumber;
-    }
-
-    public Long getContactId() {
-        return contactId;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setContactId(Long contactId) {
-        this.contactId = contactId;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
     }
 
     public static class Builder {

@@ -2,12 +2,18 @@ package com.ethan.adatingapp.domain;
 
 import com.ethan.adatingapp.domain.enums.*;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Setter;
 
 import java.util.List;
 import java.util.Set;
 
+@Setter
+@Builder
 @Entity
 @Table(name="user")
+@AllArgsConstructor
 public class User {
     @Id
     @Column(name = "user_id")
@@ -82,6 +88,9 @@ public class User {
     private double height;
 
     private Orientation orientation;
+
+    @OneToMany
+    private List<EmergencyContact> emergencyContacts;
 
     public Orientation getOrientation() {
         return orientation;
