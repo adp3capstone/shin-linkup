@@ -4,7 +4,6 @@ import za.ac.cput.linkup.domain.EmergencyContact;
 import za.ac.cput.linkup.domain.Image;
 import za.ac.cput.linkup.domain.Preference;
 import za.ac.cput.linkup.domain.User;
-import com.ethan.adatingapp.domain.enums.*;
 import za.ac.cput.linkup.domain.enums.*;
 import za.ac.cput.linkup.util.Helper;
 
