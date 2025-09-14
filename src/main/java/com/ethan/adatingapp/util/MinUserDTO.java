@@ -1,16 +1,12 @@
 package com.ethan.adatingapp.util;
 
-import com.ethan.adatingapp.domain.Preference;
 import com.ethan.adatingapp.domain.User;
-import com.ethan.adatingapp.domain.enums.Course;
-import com.ethan.adatingapp.domain.enums.Interest;
 import com.ethan.adatingapp.domain.enums.Orientation;
 
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 
-public class UserDTO {
+public class MinUserDTO {
     private Long userId;
     private String firstName;
     private String lastName;
@@ -21,26 +17,11 @@ public class UserDTO {
     private String institution;
     private String gender;
     private String course;
-    private List<Interest> interests;
-    private String imageBase64;
+    private List<String> interests;
 
-    // Preferences
-    private Long preferenceId;
-    private List<Interest> preferredInterests;
-    private String relationshipType;
-    private int minAge;
-    private int maxAge;
-    private String preferredGender;
-    private List<Course> preferredCourses;
-    private int maxDistance;
-    private boolean smokingPreference;
-    private boolean drinkingPreference;
-
-    // Likes
+    // Likes and Matches as IDs only
     private List<Long> likedUserIds;
     private List<Long> likedByUserIds;
-
-    // Matches
     private List<Long> matchedUserIds;
 
     // Additional fields
@@ -49,9 +30,9 @@ public class UserDTO {
     private double height;
     private Orientation orientation;
 
-    public UserDTO() {}
+    public MinUserDTO() {}
 
-    public UserDTO(User user) {
+    public MinUserDTO(User user) {
         this.userId = user.getUserId();
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
@@ -62,26 +43,9 @@ public class UserDTO {
         this.institution = user.getInstitution() != null ? user.getInstitution().name() : null;
         this.gender = user.getGender() != null ? user.getGender().name() : null;
         this.course = user.getCourse() != null ? user.getCourse().name() : null;
-        this.interests = user.getInterests();
 
-        // Image
-        if (user.getImage() != null && user.getImage().getImageUrl() != null) {
-            this.imageBase64 = Base64.getEncoder().encodeToString(user.getImage().getImageUrl());
-        }
-
-        // Preferences
-        Preference pref = user.getPreferences();
-        if (pref != null) {
-            this.preferenceId = pref.getPreferenceId();
-            this.preferredInterests = pref.getPreferredInterests();
-            this.relationshipType = pref.getRelationshipType() != null ? pref.getRelationshipType().name() : null;
-            this.minAge = pref.getMinAge();
-            this.maxAge = pref.getMaxAge();
-            this.preferredGender = pref.getPreferredGender() != null ? pref.getPreferredGender().name() : null;
-            this.preferredCourses = pref.getPreferredCourses();
-            this.maxDistance = pref.getMaxDistance();
-            this.smokingPreference = pref.isSmokingPreference();
-            this.drinkingPreference = pref.isDrinkingPreference();
+        if (user.getInterests() != null) {
+            this.interests = user.getInterests().stream().map(Enum::name).toList();
         }
 
         // Likes
@@ -106,12 +70,8 @@ public class UserDTO {
                 ? user.getMatchesAsUser2().stream().map(m -> m.getUser1().getUserId()).toList()
                 : List.of();
 
-// create a mutable copy
         this.matchedUserIds = new ArrayList<>(matchesFromUser1);
-
-// safely add all from the other list
         this.matchedUserIds.addAll(matchesFromUser2);
-        //this.matchedUserIds.addAll(matchesFromUser2);
 
         // Additional fields
         this.isSmoker = user.isSmoker();
@@ -141,56 +101,20 @@ public class UserDTO {
     public void setGender(String gender) { this.gender = gender; }
     public String getCourse() { return course; }
     public void setCourse(String course) { this.course = course; }
-    public List<Interest> getInterests() { return interests; }
-    public void setInterests(List<Interest> interests) { this.interests = interests; }
-    public String getImageBase64() { return imageBase64; }
-    public void setImageBase64(String imageBase64) { this.imageBase64 = imageBase64; }
-
-    // Preferences
-    public Long getPreferenceId() { return preferenceId; }
-    public void setPreferenceId(Long preferenceId) { this.preferenceId = preferenceId; }
-    public List<Interest> getPreferredInterests() { return preferredInterests; }
-    public void setPreferredInterests(List<Interest> preferredInterests) { this.preferredInterests = preferredInterests; }
-    public String getRelationshipType() { return relationshipType; }
-    public void setRelationshipType(String relationshipType) { this.relationshipType = relationshipType; }
-    public int getMinAge() { return minAge; }
-    public void setMinAge(int minAge) { this.minAge = minAge; }
-    public int getMaxAge() { return maxAge; }
-    public void setMaxAge(int maxAge) { this.maxAge = maxAge; }
-    public String getPreferredGender() { return preferredGender; }
-    public void setPreferredGender(String preferredGender) { this.preferredGender = preferredGender; }
-    public List<Course> getPreferredCourses() { return preferredCourses; }
-    public void setPreferredCourses(List<Course> preferredCourses) { this.preferredCourses = preferredCourses; }
-    public int getMaxDistance() { return maxDistance; }
-    public void setMaxDistance(int maxDistance) { this.maxDistance = maxDistance; }
-    public boolean isSmokingPreference() { return smokingPreference; }
-    public void setSmokingPreference(boolean smokingPreference) { this.smokingPreference = smokingPreference; }
-    public boolean isDrinkingPreference() { return drinkingPreference; }
-    public void setDrinkingPreference(boolean drinkingPreference) { this.drinkingPreference = drinkingPreference; }
-
-    // Likes
+    public List<String> getInterests() { return interests; }
+    public void setInterests(List<String> interests) { this.interests = interests; }
     public List<Long> getLikedUserIds() { return likedUserIds; }
     public void setLikedUserIds(List<Long> likedUserIds) { this.likedUserIds = likedUserIds; }
     public List<Long> getLikedByUserIds() { return likedByUserIds; }
     public void setLikedByUserIds(List<Long> likedByUserIds) { this.likedByUserIds = likedByUserIds; }
-
-    // Matches
     public List<Long> getMatchedUserIds() { return matchedUserIds; }
     public void setMatchedUserIds(List<Long> matchedUserIds) { this.matchedUserIds = matchedUserIds; }
-
-    // Additional fields
     public boolean isSmoker() { return isSmoker; }
     public void setSmoker(boolean smoker) { isSmoker = smoker; }
     public boolean isDrinker() { return isDrinker; }
     public void setDrinker(boolean drinker) { isDrinker = drinker; }
     public double getHeight() { return height; }
     public void setHeight(double height) { this.height = height; }
-
-    public Orientation getOrientation() {
-        return orientation;
-    }
-
-    public void setOrientation(Orientation orientation) {
-        this.orientation = orientation;
-    }
+    public Orientation getOrientation() { return orientation; }
+    public void setOrientation(Orientation orientation) { this.orientation = orientation; }
 }

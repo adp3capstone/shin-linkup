@@ -1,7 +1,5 @@
 package com.ethan.adatingapp.factory;
 
-import com.ethan.adatingapp.domain.User;
-
 public class UserFactory {
 //    public static User createUser(
 //            long userId,

@@ -1,7 +1,6 @@
 package com.ethan.adatingapp.service;
 
 import com.ethan.adatingapp.domain.Preference;
-import com.ethan.adatingapp.domain.User;
 import com.ethan.adatingapp.repository.PreferenceRepository;
 import org.springframework.stereotype.Service;
 

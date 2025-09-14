@@ -4,11 +4,13 @@ import com.ethan.adatingapp.domain.Like;
 import com.ethan.adatingapp.domain.User;
 import com.ethan.adatingapp.service.LikeService;
 import com.ethan.adatingapp.service.UserService;
+import com.ethan.adatingapp.util.LikeDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/likes")
@@ -25,9 +27,8 @@ public class LikeController {
         this.userService = userService;
     }
 
-    // Endpoint to add a like: user with likerId likes user with likedId
     @PostMapping("/add")
-    public ResponseEntity<Like> addLike(@RequestParam Long likerId, @RequestParam Long likedId) {
+    public ResponseEntity<LikeDTO> addLike(@RequestParam Long likerId, @RequestParam Long likedId) {
         User liker = userService.read(likerId);
         User liked = userService.read(likedId);
 
@@ -36,10 +37,9 @@ public class LikeController {
         }
 
         Like like = likeService.addLike(liker, liked);
-        return ResponseEntity.ok(like);
+        return ResponseEntity.ok(new LikeDTO(like));
     }
 
-    // Endpoint to remove a like
     @DeleteMapping("/remove")
     public ResponseEntity<Void> removeLike(@RequestParam Long likerId, @RequestParam Long likedId) {
         User liker = userService.read(likerId);
@@ -57,7 +57,6 @@ public class LikeController {
         }
     }
 
-    // Check if liker likes liked
     @GetMapping("/exists")
     public ResponseEntity<Boolean> isLiked(@RequestParam Long likerId, @RequestParam Long likedId) {
         User liker = userService.read(likerId);
@@ -71,25 +70,25 @@ public class LikeController {
         return ResponseEntity.ok(exists);
     }
 
-    // Get all likes made by a user
     @GetMapping("/byLiker/{userId}")
-    public ResponseEntity<List<Like>> getLikesByLiker(@PathVariable Long userId) {
+    public ResponseEntity<List<LikeDTO>> getLikesByLiker(@PathVariable Long userId) {
         User liker = userService.read(userId);
         if (liker == null) {
             return ResponseEntity.notFound().build();
         }
         List<Like> likes = likeService.getLikesByLiker(liker);
-        return ResponseEntity.ok(likes);
+        List<LikeDTO> dtoLikes = likes.stream().map(like->new LikeDTO(like)).collect(Collectors.toList());
+        return ResponseEntity.ok(dtoLikes);
     }
 
-    // Get all likes received by a user
     @GetMapping("/byLiked/{userId}")
-    public ResponseEntity<List<Like>> getLikesByLiked(@PathVariable Long userId) {
+    public ResponseEntity<List<LikeDTO>> getLikesByLiked(@PathVariable Long userId) {
         User liked = userService.read(userId);
         if (liked == null) {
             return ResponseEntity.notFound().build();
         }
         List<Like> likes = likeService.getLikesByLiked(liked);
-        return ResponseEntity.ok(likes);
+        List<LikeDTO> dtoLikes = likes.stream().map(like->new LikeDTO(like)).collect(Collectors.toList());
+        return ResponseEntity.ok(dtoLikes);
     }
 }

@@ -12,7 +12,7 @@ import java.util.List;
 @Table(name="preference")
 public class Preference {
     @Id
-    @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long preferenceId;
 
     @OneToOne

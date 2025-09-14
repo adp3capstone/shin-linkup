@@ -2,9 +2,7 @@ package com.ethan.adatingapp.util;
 
 import com.ethan.adatingapp.domain.Preference;
 import com.ethan.adatingapp.domain.enums.Course;
-import com.ethan.adatingapp.domain.enums.Gender;
 import com.ethan.adatingapp.domain.enums.Interest;
-import com.ethan.adatingapp.domain.enums.RelationshipType;
 
 import java.util.List;
 
