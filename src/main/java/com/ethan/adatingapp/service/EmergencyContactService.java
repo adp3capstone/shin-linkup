@@ -1,60 +1,60 @@
 package com.ethan.adatingapp.service;
 
 import com.ethan.adatingapp.domain.EmergencyContact;
+import com.ethan.adatingapp.domain.User;
 import com.ethan.adatingapp.repository.EmergencyContactRepository;
+import com.ethan.adatingapp.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.List;
 
 @Service
-public class EmergencyContactService implements IEmergencyContactService {
+public class EmergencyContactService {
 
     private final EmergencyContactRepository repository;
+    private final UserRepository userRepository;
+    private final EmergencyContactRepository emergencyContactRepository;
 
     @Autowired
-    public EmergencyContactService(EmergencyContactRepository repository) {
+    public EmergencyContactService(EmergencyContactRepository repository, UserRepository userRepository, EmergencyContactRepository emergencyContactRepository) {
         this.repository = repository;
+        this.userRepository = userRepository;
+        this.emergencyContactRepository = emergencyContactRepository;
     }
 
-    @Override
-    public EmergencyContact create(EmergencyContact entity) {
-        if (entity == null) return null;
-        return repository.save(entity);
-    }
-
-    @Override
-    public EmergencyContact read(Long id) {
-        if (id == null) return null;
-        Optional<EmergencyContact> optional = repository.findById(id);
-        return optional.orElse(null);
-    }
-
-    @Override
-    public EmergencyContact update(EmergencyContact emergencyContact) {
-        if (emergencyContact == null || emergencyContact.getEmergencyContactId() == null) return null;
-        if (!repository.existsById(emergencyContact.getEmergencyContactId())) return null;
+    public EmergencyContact create(EmergencyContact emergencyContact) {
+        if (emergencyContact == null)
+            return null;
         return repository.save(emergencyContact);
     }
 
-    @Override
-    public boolean delete(long id) {
-        if (!repository.existsById(id)) return false;
-        repository.deleteById(id);
-        return true;
-    }
-    @Override
-    public EmergencyContact findById(Long id) {
-        if (id == null) return null;
+    public EmergencyContact read(Long id) {
         return repository.findById(id).orElse(null);
     }
 
-    @Override
-    public Optional<EmergencyContact> findByUser(Long userId) {
-        if (userId == null || userId <= 0) return null;
-        return repository.findByUserUserId(userId); // make sure this method exists in your repository
+    public List<EmergencyContact> getAll() {
+        return repository.findAll();
     }
 
+    public EmergencyContact update(EmergencyContact emergencyContact) {
+        if (emergencyContact == null || !repository.existsById(emergencyContact.getContactId()))
+            return null;
+        return repository.save(emergencyContact);
+    }
 
+    public List<EmergencyContact> getAllByUser(Long id){
+        User user = userRepository.findById(id).orElse(null);
+        if(user == null) return null;
 
+        List<EmergencyContact> contacts = emergencyContactRepository.findAllByUser_userId(user.getUserId());
+        return contacts;
+    }
+
+    public boolean delete(Long id) {
+        if (!repository.existsById(id))
+            return false;
+        repository.deleteById(id);
+        return true;
+    }
 }

@@ -1,15 +1,16 @@
 package com.ethan.adatingapp.service;
-import at.favre.lib.crypto.bcrypt.BCrypt;
+
 import com.ethan.adatingapp.domain.User;
-import com.ethan.adatingapp.domain.enums.*;
+import com.ethan.adatingapp.domain.enums.Course;
+import com.ethan.adatingapp.domain.enums.Gender;
+import com.ethan.adatingapp.domain.enums.Institution;
+import com.ethan.adatingapp.domain.enums.Interest;
 import com.ethan.adatingapp.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserService {
@@ -21,9 +22,15 @@ public class UserService {
     }
 
     public User create(User user) {
-        String encryptedPassword = BCrypt.withDefaults()
-                .hashToString(12, user.getPassword().toCharArray());
-        user.setPassword(encryptedPassword);
+        //Encrypt password before saving
+//        String encryptedPassword = BCrypt.withDefaults()
+//                .hashToString(12, user.getPassword().toCharArray());
+//
+//        User encryptedUser = new User.Builder()
+//                .copy(user)
+//                .setPassword(encryptedPassword)
+//                .build();
+
         return userRepository.save(user);
     }
 
@@ -32,28 +39,15 @@ public class UserService {
     }
 
     public User findByUsernameAndPassword(String username, String password) {
-        User user = userRepository.findByUsername(username);
-        if (user != null) {
-            BCrypt.Result result = BCrypt.verifyer().verify(password.toCharArray(), user.getPassword());
-            if (result.verified) {
-                return user;
-            }
-        }
-        return null;
+        return userRepository.findByUsernameAndPassword(username, password);
     }
 
     public User update(User user) {
         return userRepository.save(user);
     }
 
-    public boolean delete(long userId) {
-        Optional<User> userOpt = userRepository.findById(userId);
-        if (userOpt.isPresent()) {
-            userRepository.deleteById(userId);
-            return true;
-        } else {
-            return false;
-        }
+    public void delete(Long id) {
+        userRepository.deleteById(id);
     }
 
     public List<User> findAllByCourse(Course course) {
@@ -76,23 +70,7 @@ public class UserService {
         return userRepository.findAllByInterestsIn(interests);
     }
 
-    public List<User> findUsersForDeletion(LocalDateTime now) {
-        return userRepository.findAllByDeletionDueDateBefore(now);
-    }
-    public User findByEmail(String email) {
-        return userRepository.findByEmail(email);
-    }
-
-    public User login(String email, String rawPassword) {
-        User user = userRepository.findByEmail(email);
-        if (user == null) return null;
-
-        // Verify password against BCrypt hash
-        if (BCrypt.verifyer().verify(rawPassword.toCharArray(), user.getPassword()).verified) {
-            return user;
-        }
-        return null;
-
-
+    public List<User> findAll(){
+        return userRepository.findAll();
     }
 }
