@@ -1,6 +1,6 @@
 package za.ac.cput.linkup.domain;
 
-import com.ethan.adatingapp.domain.enums.*;
+import za.ac.cput.linkup.domain.enums.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
