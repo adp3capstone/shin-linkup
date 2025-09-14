@@ -5,7 +5,6 @@ Date:18 May 2025
 */
 import com.ethan.adatingapp.domain.Image;
 import com.ethan.adatingapp.domain.User;
-import com.ethan.adatingapp.util.Helper;
 
 public class ImageFactory {
     public static Image createImage(

@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.ethan.adatingapp</groupId>
-    <artifactId>adatingapp</artifactId>
+    <artifactId>linkup-api</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <parent>
@@ -102,7 +102,7 @@
                         <image>eclipse-temurin:21-jre-jammy</image>
                     </from>
                     <to>
-                        <image>registry.hub.docker.com/restartedev/adapp-test</image>
+                        <image>registry.hub.docker.com/restartedev/linkup-api</image>
                     </to>
                 </configuration>
             </plugin>
