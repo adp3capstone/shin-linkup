@@ -63,17 +63,7 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> createUser(
-            @RequestParam("user") String userJson,
-            @RequestParam(value = "image", required = false) MultipartFile imageFile) {
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        User user;
-        try {
-            user = objectMapper.readValue(userJson, User.class);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Invalid user JSON: " + e.getMessage());
-        }
+    public ResponseEntity<?> createUser(@RequestBody User user) {
 
         List<String> errors = new ArrayList<>();
 
@@ -108,18 +98,9 @@ public class UserController {
         // save user
         User createdUser = userService.create(user);
 
-        // save image if provided
-        if (imageFile != null && !imageFile.isEmpty()) {
-            try {
-                imageService.createImage(createdUser, imageFile);
-            } catch (Exception e) {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body("User created but failed to upload image: " + e.getMessage());
-            }
-        }
-
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
+
 
 
     @GetMapping("/{userId}")
