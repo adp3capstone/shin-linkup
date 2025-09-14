@@ -3,6 +3,7 @@ package com.ethan.adatingapp.service;
 import com.ethan.adatingapp.domain.Like;
 import com.ethan.adatingapp.domain.User;
 import com.ethan.adatingapp.repository.LikeRepository;
+import com.ethan.adatingapp.repository.MatchRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,22 +13,43 @@ import java.util.List;
 public class LikeService {
 
     private final LikeRepository likeRepository;
+    private final MatchRepository matchRepository;
 
     @Autowired
-    public LikeService(LikeRepository likeRepository) {
+    public LikeService(LikeRepository likeRepository, MatchRepository matchRepository) {
         this.likeRepository = likeRepository;
+        this.matchRepository = matchRepository;
     }
 
     // Create a like (userA likes userB)
     public Like addLike(User liker, User liked) {
-        Like existingLike = likeRepository.findByLikerUserIdAndLikedUserId(liker.getUserId(), liked.getUserId());
+        // Prevent duplicate likes
+        Like existingLike = likeRepository.findByLikerUserIdAndLikedUserId(
+                liker.getUserId(), liked.getUserId());
         if (existingLike != null) {
-            return existingLike; // or throw exception or handle as needed
+            return existingLike;
         }
 
+        // Save the like first
         Like like = new Like(liker, liked);
-        return likeRepository.save(like);
+        likeRepository.save(like);
+
+        // Check if reciprocal like exists
+        if (likeRepository.existsByLikerAndLiked(liked, liker)) {
+            User user1 = liker;
+            User user2 = liked;
+
+            // Enforce order by ID to avoid duplicates
+            if (user1.getUserId() > user2.getUserId()) {
+                User tmp = user1;
+                user1 = user2;
+                user2 = tmp;
+            }
+        }
+
+        return like;
     }
+
 
     // Remove a like
     public boolean removeLike(User liker, User liked) {

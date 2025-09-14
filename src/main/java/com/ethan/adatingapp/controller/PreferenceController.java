@@ -46,40 +46,15 @@ public class PreferenceController {
         }
     }
 
-    @PutMapping("/{userId}")
-    public ResponseEntity<Preference> updatePreference(
-            @PathVariable Long userId,
-            @RequestBody Preference preferenceDetails) {
-
-        // 1. Check if user exists
-        User user = userService.read(userId);
-        if (user == null) {
+    @PutMapping
+    public ResponseEntity<Preference> updatePreference(@RequestBody Preference preference) {
+        Preference updatedPreference = preferenceService.update(preference);
+        if (updatedPreference != null) {
+            return ResponseEntity.ok(updatedPreference);
+        } else {
             return ResponseEntity.notFound().build();
         }
-
-        // 2. Get the user's existing preference
-        Preference existingPreference = preferenceService.findByUser(userId);
-        if (existingPreference == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        // 3. Update fields (example: gender, age range, interests, etc.)
-        existingPreference.setPreferredGender(preferenceDetails.getPreferredGender());
-        existingPreference.setMinAge(preferenceDetails.getMinAge());
-        existingPreference.setMaxAge(preferenceDetails.getMaxAge());
-        existingPreference.setPreferredInterests(preferenceDetails.getPreferredInterests());
-        existingPreference.setRelationshipType(preferenceDetails.getRelationshipType());
-        existingPreference.setPreferredCourses(preferenceDetails.getPreferredCourses());
-        existingPreference.setMaxDistance(preferenceDetails.getMaxDistance());
-        existingPreference.setSmokingPreference(preferenceDetails.isSmokingPreference());
-        existingPreference.setDrinkingPreference(preferenceDetails.isDrinkingPreference());
-
-
-        // 4. Save updated preference
-        Preference updatedPreference = preferenceService.update(existingPreference);
-        return ResponseEntity.ok(updatedPreference);
     }
-
 
     @DeleteMapping
     public ResponseEntity<Void> deletePreference(@RequestParam Long id) {
