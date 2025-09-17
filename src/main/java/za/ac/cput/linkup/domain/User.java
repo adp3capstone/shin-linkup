@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 @Setter
-@Builder
+@Builder(toBuilder = true)
 @Entity
 @Table(name="user")
 @AllArgsConstructor

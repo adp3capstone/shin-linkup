@@ -45,12 +45,23 @@ public class PreferenceController {
             return ResponseEntity.notFound().build();
         }
     }
+    @GetMapping("/user/{id}")
+    public ResponseEntity<PreferenceDTO> getPreferenceByUser(@PathVariable Long id) {
+        Preference preference = preferenceService.findByUser(id);
+        if (preference != null) {
+            PreferenceDTO dto = new PreferenceDTO(preference);
+            return ResponseEntity.ok(dto);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
-    @PutMapping
-    public ResponseEntity<Preference> updatePreference(@RequestBody Preference preference) {
-        Preference updatedPreference = preferenceService.update(preference);
+    @PatchMapping
+    public ResponseEntity<PreferenceDTO> updatePreference(@RequestBody Preference preference) {
+        Preference updatedPreference = preferenceService.createOrUpdatePreference(preference);
         if (updatedPreference != null) {
-            return ResponseEntity.ok(updatedPreference);
+            PreferenceDTO dto = new PreferenceDTO(updatedPreference);
+            return ResponseEntity.ok(dto);
         } else {
             return ResponseEntity.notFound().build();
         }

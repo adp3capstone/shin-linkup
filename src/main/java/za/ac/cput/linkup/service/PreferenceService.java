@@ -26,9 +26,15 @@ private final PreferenceRepository preferenceRepository;
         return preferenceRepository.findByUserId(userid);
     }
 
-    public Preference update(Preference preference) {
+    public Preference createOrUpdatePreference(Preference preference) {
+        Preference existingPref = preferenceRepository.findByUserId(preference.getUser().getUserId());
+        if (existingPref != null) {
+            preference.setPreferenceId(existingPref.getPreferenceId()); // update existing
+        }
         return preferenceRepository.save(preference);
     }
+
+
 
     public void delete(Long id) {
         preferenceRepository.deleteById(id);

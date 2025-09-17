@@ -30,7 +30,6 @@ public class MessageController {
         this.userRepository = userRepository;
     }
 
-    // Send a message
     @PostMapping("/send")
     public ResponseEntity<MessageDTO> sendMessage(
             @RequestParam Long chatId,
@@ -48,7 +47,6 @@ public class MessageController {
         return ResponseEntity.ok(new MessageDTO(message));
     }
 
-    // Fetch messages for a chat
     @GetMapping("/chat/{chatId}")
     public ResponseEntity<List<MessageDTO>> getMessagesForChat(@PathVariable Long chatId) {
         Chat chat = chatRepository.findById(chatId).orElse(null);

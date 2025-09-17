@@ -38,7 +38,6 @@ public class ChatController {
         return ResponseEntity.ok(dtos);
     }
 
-    // Get chat by ID
     @GetMapping("/{chatId}")
     public ResponseEntity<ChatDTO> getChatById(@PathVariable Long chatId) {
         Chat chat = chatService.getChat(chatId);
@@ -49,7 +48,6 @@ public class ChatController {
         return ResponseEntity.ok(dto);
     }
 
-    // Create a new chat (associates with a match)
     @PostMapping("/create/bymatch/{matchId}")
     public ResponseEntity<ChatDTO> createChat(@PathVariable Long matchId) {
         Chat chat = chatService.createWithMatch(matchId);

@@ -106,12 +106,8 @@ public class UserController {
     @GetMapping("/{userId}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable long userId) {
         User user = userService.read(userId);
-        Preference preferences = preferenceService.findByUser(userId);
 
         if (user != null) {
-            if (preferences != null) {
-                user.setPreferences(preferences);
-            }
             UserDTO userDTO = new UserDTO(user);
             return ResponseEntity.ok(userDTO);
         } else {
@@ -156,7 +152,7 @@ public class UserController {
                     ReflectionUtils.setField(field, user, convertedValue);
                 }
             } catch (Exception e) {
-                e.printStackTrace(); // You can handle this better with logging
+                e.printStackTrace();
             }
         });
 
