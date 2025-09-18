@@ -93,24 +93,24 @@ public class Helper {
         return interests != null && !interests.isEmpty();
     }
 
-    public static RelationshipType validateRelationshipType(RelationshipType type) {
-        return type == null ? null : type;
+    public static boolean isValidRelationshipType(RelationshipType type) {
+        return type != null;
     }
 
-    public static Integer validateMinAge(int minAge) {
-        return (minAge < 18) ? null : minAge;
+    public static boolean isValidMinAge(int minAge) {
+        return minAge >= 18;
     }
 
-    public static Integer validateMaxAge(int maxAge, int minAge) {
-        return (maxAge < minAge || maxAge > 120) ? null : maxAge;
+    public static boolean isValidMaxAge(int maxAge, int minAge) {
+        return maxAge >= minAge && maxAge <= 120;
     }
 
-    public static Gender validatePreferredGender(Gender gender) {
-        return gender == null ? null : gender;
+    public static boolean isValidPreferredGender(Gender gender) {
+        return gender != null;
     }
 
-    public static List<Course> validateCourses(List<Course> courses) {
-        return (courses == null || courses.isEmpty()) ? null : courses;
+    public static boolean isValidCourses(List<Course> courses) {
+        return courses != null && !courses.isEmpty();
     }
 
     public static Integer validateMaxDistance(int distance) {
