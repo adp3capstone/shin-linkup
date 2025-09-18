@@ -1,5 +1,6 @@
 package za.ac.cput.linkup.domain;
 
+import lombok.ToString;
 import za.ac.cput.linkup.domain.enums.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -10,6 +11,7 @@ import za.ac.cput.linkup.domain.enums.*;
 import java.util.List;
 import java.util.Set;
 
+@ToString
 @Setter
 @Builder(toBuilder = true)
 @Entity
@@ -222,24 +224,7 @@ public class User {
         return preferences;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "userId=" + userId +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", email='" + email + '\'' +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", age=" + age +
-                ", bio='" + bio + '\'' +
-                ", institution=" + institution +
-                ", gender=" + gender +
-                ", interests=" + interests +
-                ", image=" + image +
-                ",course=" + course +
-                '}';
-    }
+
 
     //Setters
     public void setUserId(Long userId) {

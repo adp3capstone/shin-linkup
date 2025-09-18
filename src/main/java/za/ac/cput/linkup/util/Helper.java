@@ -23,6 +23,10 @@ public class Helper {
         return email != null && email.matches(emailRegex);
     }
 
+    public static boolean isValidPositiveDouble(double value) {
+        return !Double.isNaN(value) && !Double.isInfinite(value) && value > 0;
+    }
+
     public static boolean isIntNull(int y){
         if(y == 0)
             return true;
@@ -85,8 +89,8 @@ public class Helper {
         return isObjectNull(user) ? null : user;
     }
 
-    public static List<Interest> validateInterests(List<Interest> interests) {
-        return (interests == null || interests.isEmpty()) ? null : interests;
+    public static boolean isValidInterests(List<Interest> interests) {
+        return interests != null && !interests.isEmpty();
     }
 
     public static RelationshipType validateRelationshipType(RelationshipType type) {

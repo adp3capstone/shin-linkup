@@ -6,13 +6,11 @@ import za.ac.cput.linkup.domain.enums.Course;
 import za.ac.cput.linkup.domain.enums.Gender;
 import za.ac.cput.linkup.domain.enums.Institution;
 import za.ac.cput.linkup.domain.enums.Interest;
+import za.ac.cput.linkup.factory.UserFactory;
 import za.ac.cput.linkup.service.ImageService;
 import za.ac.cput.linkup.service.PreferenceService;
 import za.ac.cput.linkup.service.UserService;
-import za.ac.cput.linkup.util.AuthRequest;
-import za.ac.cput.linkup.util.AuthResponse;
-import za.ac.cput.linkup.util.JwtUtil;
-import za.ac.cput.linkup.util.UserDTO;
+import za.ac.cput.linkup.util.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -63,40 +61,28 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> createUser(@RequestBody User user) {
-
-        List<String> errors = new ArrayList<>();
-
-        if (user.getFirstName() == null || user.getFirstName().isBlank()) {
-            errors.add("First name is required");
+    public ResponseEntity<?> createUser(@RequestBody SignUpRequest user) {
+        User buildUser = UserFactory.createUserForSignup(
+                user.getFirstName(),
+                user.getLastName(),
+                user.getEmail(),
+                user.getUsername(),
+                user.getPassword(),
+                user.getAge(),
+                user.getBio(),
+                user.getInstitution(),
+                user.getGender(),
+                user.getCourse(),
+                user.getInterests(),
+                user.isSmoker(),
+                user.isDrinker(),
+                user.getHeight(),
+                user.getOrientation()
+        );
+        if(buildUser==null){
+            return ResponseEntity.badRequest().body("Not all fields were completed correctly. Please try signing up again.");
         }
-
-        if (user.getLastName() == null || user.getLastName().isBlank()) {
-            errors.add("Last name is required");
-        }
-
-        if (user.getEmail() == null || user.getEmail().isBlank()) {
-            errors.add("A valid email is required");
-        }
-
-        if (user.getUsername() == null || user.getUsername().isBlank()) {
-            errors.add("Username is required");
-        }
-
-        if (user.getPassword() == null || user.getPassword().isBlank()) {
-            errors.add("Password is required");
-        }
-
-        if (user.getAge() < 1) {
-            errors.add("Age must be at least 1");
-        }
-
-        if (!errors.isEmpty()) {
-            return ResponseEntity.badRequest().body(errors);
-        }
-
-        // save user
-        User createdUser = userService.create(user);
+        User createdUser = userService.create(buildUser);
 
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }

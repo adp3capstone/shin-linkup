@@ -24,7 +24,7 @@ public class PreferenceFactory {
 
         return Preference.builder()
                 .user(Helper.validateUser(user))
-                .preferredInterests(Helper.validateInterests(preferredInterests))
+                .preferredInterests(preferredInterests)
                 .relationshipType(Helper.validateRelationshipType(relationshipType))
                 .minAge(Helper.validateMinAge(minAge))
                 .maxAge(Helper.validateMaxAge(maxAge, minAge))
