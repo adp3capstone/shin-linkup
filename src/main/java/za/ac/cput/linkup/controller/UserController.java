@@ -169,10 +169,6 @@ public class UserController {
         }
         List<UserDTO> userDTOs = new ArrayList<>();
         for (User user : users) {
-            Preference preferences = preferenceService.findByUser(user.getUserId());
-            if (preferences != null) {
-                user.setPreferences(preferences);
-            }
             userDTOs.add(new UserDTO(user));
         }
         return ResponseEntity.ok(userDTOs);
