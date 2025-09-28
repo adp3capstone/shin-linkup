@@ -45,9 +45,6 @@ public class User extends BaseUser{
     @OneToMany(mappedBy = "liked", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Like> likesReceived;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Ticket> myTickets;
-
     @OneToMany(mappedBy = "user1")
     private List<Match> matchesAsUser1;
 

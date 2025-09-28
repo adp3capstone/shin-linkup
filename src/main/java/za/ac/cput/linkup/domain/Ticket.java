@@ -29,6 +29,7 @@ public class Ticket {
     private LocalDateTime updatedAt;
     private LocalDateTime resolvedAt;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "resolved_by_user_id")
     private User resolvedBy;
 }

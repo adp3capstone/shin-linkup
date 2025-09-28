@@ -23,14 +23,31 @@ public class TicketController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Ticket> getTicket(@PathVariable Long id) {
+    public ResponseEntity<TicketDTO> getTicket(@PathVariable Long id) {
         Ticket ticket = ticketService.getTicket(id);
-        return ticket != null ? ResponseEntity.ok(ticket) : ResponseEntity.notFound().build();
+        TicketDTO dto = new TicketDTO(ticket);
+        return ticket != null ? ResponseEntity.ok(dto) : ResponseEntity.notFound().build();
     }
 
     @GetMapping
-    public ResponseEntity<List<Ticket>> getAllTickets() {
-        return ResponseEntity.ok(ticketService.getAllTickets());
+    public ResponseEntity<List<TicketDTO>> getAllTickets() {
+        List<Ticket> tickets = ticketService.getAllTickets();
+        if(tickets.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        List<TicketDTO> dtos = tickets.stream().map(ticket -> new TicketDTO(
+                ticket.getTicketId(),
+                ticket.getUser().getUserId(),
+                ticket.getIssueType(),
+                ticket.getDescription(),
+                ticket.getStatus(),
+                ticket.getCreatedAt(),
+                ticket.getUpdatedAt(),
+                ticket.getResolvedAt(),
+                ticket.getResolvedBy() != null ? ticket.getResolvedBy().getUserId() : null
+        )).toList();
+
+        return ResponseEntity.ok(dtos);
     }
 
     @PostMapping
@@ -66,7 +83,7 @@ public class TicketController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Ticket> patchTicket(@PathVariable Long id, @RequestBody Ticket ticket) {
+    public ResponseEntity<TicketDTO> patchTicket(@PathVariable Long id, @RequestBody Ticket ticket) {
         Ticket existingTicket = ticketService.getTicket(id);
 
         if (existingTicket == null) {
@@ -100,10 +117,11 @@ public class TicketController {
             builder.resolvedBy(ticket.getResolvedBy());
         }
 
-        Ticket patchedTicket = builder.build();
+        Ticket patchedTicket = builder.updatedAt(LocalDateTime.now()).build();
 
         Ticket updated = ticketService.updateTicket(patchedTicket);
         if(updated != null) {
+            TicketDTO dto = new TicketDTO(updated);
             ResponseEntity.ok(updated);
         }
 
@@ -118,7 +136,25 @@ public class TicketController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Ticket>> getTicketsByUserId(@PathVariable Long userId) {
-        return ResponseEntity.ok(ticketService.getTicketsByUserId(userId));
+    public ResponseEntity<List<TicketDTO>> getTicketsByUserId(@PathVariable Long userId) {
+        List<Ticket> tickets = ticketService.getTicketsByUserId(userId);
+
+        if(tickets.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        List<TicketDTO> dtos = tickets.stream().map(ticket -> new TicketDTO(
+                ticket.getTicketId(),
+                ticket.getUser().getUserId(),
+                ticket.getIssueType(),
+                ticket.getDescription(),
+                ticket.getStatus(),
+                ticket.getCreatedAt(),
+                ticket.getUpdatedAt(),
+                ticket.getResolvedAt(),
+                ticket.getResolvedBy() != null ? ticket.getResolvedBy().getUserId() : null
+        )).toList();
+
+        return ResponseEntity.ok(dtos);
     }
 }

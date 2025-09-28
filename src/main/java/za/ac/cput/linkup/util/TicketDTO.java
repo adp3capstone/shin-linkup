@@ -1,11 +1,14 @@
 package za.ac.cput.linkup.util;
 
 import lombok.Getter;
+import lombok.Setter;
+import za.ac.cput.linkup.domain.Ticket;
 import za.ac.cput.linkup.domain.enums.IssueType;
 import za.ac.cput.linkup.domain.enums.TicketStatus;
 import java.time.LocalDateTime;
 
 @Getter
+@Setter
 public class TicketDTO {
     private Long ticketId;
     private Long userId;
@@ -29,5 +32,17 @@ public class TicketDTO {
         this.updatedAt = updatedAt;
         this.resolvedAt = resolvedAt;
         this.resolvedById = resolvedById;
+    }
+
+    public TicketDTO(Ticket ticket) {
+        this.ticketId = ticket.getTicketId();
+        this.userId = ticket.getUser().getUserId();
+        this.issueType = ticket.getIssueType();
+        this.description = ticket.getDescription();
+        this.status = ticket.getStatus();
+        this.createdAt = ticket.getCreatedAt();
+        this.updatedAt = ticket.getUpdatedAt();
+        this.resolvedAt = ticket.getResolvedAt();
+        this.resolvedById = ticket.getResolvedBy() != null ? ticket.getResolvedBy().getUserId() : null;
     }
 }
