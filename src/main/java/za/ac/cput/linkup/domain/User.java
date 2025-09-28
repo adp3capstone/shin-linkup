@@ -1,17 +1,15 @@
 package za.ac.cput.linkup.domain;
 
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import za.ac.cput.linkup.domain.enums.*;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Setter;
 import za.ac.cput.linkup.domain.enums.*;
 
 import java.util.List;
 import java.util.Set;
 
+@Getter
 @ToString
 @Setter
 @SuperBuilder
@@ -66,6 +64,9 @@ public class User extends BaseUser{
 
     @OneToMany
     private List<EmergencyContact> emergencyContacts;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Ticket> tickets;
 
     public User() {
 

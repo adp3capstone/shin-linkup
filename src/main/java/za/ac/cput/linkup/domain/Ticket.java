@@ -1,18 +1,16 @@
 package za.ac.cput.linkup.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import za.ac.cput.linkup.domain.enums.IssueType;
+import za.ac.cput.linkup.domain.enums.TicketStatus;
 
 import java.time.LocalDateTime;
-
+@Getter
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@Builder(toBuilder = true)
 @Entity
 @Table(name = "tickets")
 public class Ticket {
@@ -26,7 +24,11 @@ public class Ticket {
 
     IssueType issueType;
     private String description;
-    private String status;
+    private TicketStatus status;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private LocalDateTime resolvedAt;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private User resolvedBy;
 }
