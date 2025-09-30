@@ -1,4 +1,8 @@
 package com.ethan.adatingapp.service;
+/* Match Service.java
+Author: Luyanda Makhanya (222788291)
+Date:18 May 2025
+*/
 
 import com.ethan.adatingapp.domain.Match;
 import com.ethan.adatingapp.domain.User;

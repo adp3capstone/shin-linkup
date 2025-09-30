@@ -63,7 +63,7 @@ public class MatchController {
         return ResponseEntity.notFound().build();
     }
 
-    @GetMapping("/{matchId}")
+    @GetMapping("/{matchId}")//fetches a single match by its id
     public ResponseEntity<?> getMatchById(@PathVariable Long matchId){
         Match match = matchService.read(matchId);
         if(match==null){

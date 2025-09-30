@@ -6,6 +6,7 @@ import com.ethan.adatingapp.domain.enums.Gender;
 import com.ethan.adatingapp.domain.enums.Institution;
 import com.ethan.adatingapp.domain.enums.Interest;
 import com.ethan.adatingapp.repository.UserRepository;
+import com.ethan.adatingapp.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,10 +16,12 @@ import java.util.List;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final JwtUtil jwtUtil;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, JwtUtil jwtUtil) {
         this.userRepository = userRepository;
+        this.jwtUtil = jwtUtil;
     }
 
     public User create(User user) {
@@ -73,4 +76,22 @@ public class UserService {
     public List<User> findAll(){
         return userRepository.findAll();
     }
+
+    //Forgot password
+
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);// Make sure UserRepository has a findByEmail method
+    }
+
+    public String generatePasswordResetToken(String email) {
+        return jwtUtil.generateToken(email);
+    }
+
+    public String createPasswordResetLink(String email) {
+        String token = generatePasswordResetToken(email);
+        return "http://localhost:8081/reset-password?token=" + token;
+    }
+
+
+
 }

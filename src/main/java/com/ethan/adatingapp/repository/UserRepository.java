@@ -19,4 +19,5 @@ public interface UserRepository extends JpaRepository<User,Long> {
     List<User> findAllByAgeBetween(int minAge, int maxAge);
     List<User> findAllByGender(Gender gender);
     List<User> findAllByInterestsIn(Collection<Interest> interests);
+    User findByEmail(String email);
 }

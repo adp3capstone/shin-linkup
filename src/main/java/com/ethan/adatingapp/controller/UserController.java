@@ -6,6 +6,7 @@ import com.ethan.adatingapp.domain.enums.Course;
 import com.ethan.adatingapp.domain.enums.Gender;
 import com.ethan.adatingapp.domain.enums.Institution;
 import com.ethan.adatingapp.domain.enums.Interest;
+import com.ethan.adatingapp.service.EmailService;
 import com.ethan.adatingapp.service.ImageService;
 import com.ethan.adatingapp.service.PreferenceService;
 import com.ethan.adatingapp.service.UserService;
@@ -34,16 +35,18 @@ public class UserController {
     private final UserService userService;
     private final PreferenceService preferenceService;
     private final ImageService imageService;
+    private final EmailService emailService;
 
     private final JwtUtil jwtUtil;
 
     @Autowired
     public UserController(UserService userService, PreferenceService preferenceService, ImageService imageService,
-                          JwtUtil jwtUtil) {
+                          JwtUtil jwtUtil, EmailService emailService) {
         this.userService = userService;
         this.preferenceService = preferenceService;
         this.imageService = imageService;
         this.jwtUtil = jwtUtil;
+        this.emailService = emailService;
     }
 
     @PostMapping("/login")
@@ -67,7 +70,7 @@ public class UserController {
             @RequestParam("user") String userJson,
             @RequestParam(value = "image", required = false) MultipartFile imageFile) {
 
-        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectMapper objectMapper = new ObjectMapper(); //converts JSON to a user Object
         User user;
         try {
             user = objectMapper.readValue(userJson, User.class);
@@ -120,6 +123,40 @@ public class UserController {
 
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
+
+    // Simple signup without image don't delete just in case
+//
+//    @PostMapping("/signup")
+//    public ResponseEntity<?> createUser(@RequestBody User user) {
+//        List<String> errors = new ArrayList<>();
+//
+//        if (user.getFirstName() == null || user.getFirstName().isBlank()) {
+//            errors.add("First name is required");
+//        }
+//        if (user.getLastName() == null || user.getLastName().isBlank()) {
+//            errors.add("Last name is required");
+//        }
+//        if (user.getEmail() == null || user.getEmail().isBlank()) {
+//            errors.add("A valid email is required");
+//        }
+//        if (user.getUsername() == null || user.getUsername().isBlank()) {
+//            errors.add("Username is required");
+//        }
+//        if (user.getPassword() == null || user.getPassword().isBlank()) {
+//            errors.add("Password is required");
+//        }
+//        if (user.getAge() < 1) {
+//            errors.add("Age must be at least 1");
+//        }
+//
+//        if (!errors.isEmpty()) {
+//            return ResponseEntity.badRequest().body(errors);
+//        }
+//
+//        // Save user
+//        User createdUser = userService.create(user);
+//        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+//    }
 
 
     @GetMapping("/{userId}")
@@ -300,4 +337,61 @@ public class UserController {
         }
         return ResponseEntity.ok(userDTOs);
     }
+
+    //Forgot password    @PostMapping("/forgot-password")
+    //    public ResponseEntity<String> forgotPassword(@RequestParam String email) {
+    //        User user = userService.findByEmail(email);
+    //        if (user == null) {
+    //            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+    //                    .body("No user found with this email.");
+    //        }
+    //
+    //        //Generate password reset token
+    //        String resetToken = userService.generatePasswordResetToken(email);
+    //
+    //        //Send email with reset link
+    //        emailService.sendResetPasswordEmail(email, resetToken);
+    //
+    //        //Return success response
+    //        return ResponseEntity.ok("Password reset link has been sent to your email.");
+    //    }
+
+    @PostMapping("/auth/forgot-password")
+    public ResponseEntity<String> forgotPassword(@RequestParam String email) {
+        User user = userService.findByEmail(email);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("No user found with this email.");
+        }
+
+        // Generate JWT token for password reset
+        String resetToken = jwtUtil.generateToken(user.getEmail());
+
+        // Send email with reset link containing JWT
+        emailService.sendResetPasswordEmail(email, resetToken);
+
+        return ResponseEntity.ok("Password reset link has been sent to your email.");
+    }
+
+    @PostMapping("/auth/reset-password")
+    public ResponseEntity<String> resetPassword(@RequestParam String token, @RequestParam String newPassword) {
+        String email = jwtUtil.extractUsername(token);
+        if (email == null || email.isBlank()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Invalid token.");
+        }
+
+        User user = userService.findByEmail(email);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("No user found with this email.");
+        }
+
+        // Update user's password
+        user.setPassword(newPassword);
+        userService.update(user);
+
+        return ResponseEntity.ok("Password has been reset successfully.");
+    }
+
 }

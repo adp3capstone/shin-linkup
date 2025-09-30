@@ -3,6 +3,7 @@ package com.ethan.adatingapp.domain;
 import com.ethan.adatingapp.domain.enums.*;
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -69,6 +70,7 @@ public class User {
         this.likesReceived = likesReceived;
     }
 
+
     @OneToMany(mappedBy = "user1")
     private List<Match> matchesAsUser1;
 
@@ -82,6 +84,7 @@ public class User {
     private double height;
 
     private Orientation orientation;
+
 
     public Orientation getOrientation() {
         return orientation;
@@ -106,6 +109,8 @@ public class User {
     public void setMatchesAsUser2(List<Match> matchesAsUser2) {
         this.matchesAsUser2 = matchesAsUser2;
     }
+
+
 
     public boolean isSmoker() {
         return isSmoker;
@@ -150,6 +155,7 @@ public class User {
     public User() {
 
     }
+
 
     public Course getCourse() {
         return course;
@@ -211,6 +217,7 @@ public class User {
     public Preference getPreferences() {
         return preferences;
     }
+
 
     @Override
     public String toString() {
