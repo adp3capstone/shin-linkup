@@ -27,26 +27,15 @@ public class PreferenceFactory {
                                               boolean smokingPreference,
                                               boolean drinkingPreference) {
 
-        if (
-                !Helper.isValidInterests(preferredInterests)
-                        || Helper.isObjectNull(relationshipType)
-                        || Helper.isValidMinAge(minAge)
-                        || Helper.isValidMaxAge(maxAge, minAge)
-                        || Helper.isObjectNull(preferredGender)
-                        || Helper.isValidCourses(preferredCourses)
-                        || Helper.isIntZero(maxDistance) || Helper.isIntNegative(maxDistance)
-        ) {
-            return null;
-        }
         return Preference.builder()
                 .user(Helper.validateUser(user))
                 .preferredInterests(preferredInterests)
-                .relationshipType(relationshipType)
-                .minAge(minAge)
-                .maxAge(maxAge)
-                .preferredGender(preferredGender)
-                .preferredCourses(preferredCourses)
-                .maxDistance(maxDistance)
+                .relationshipType(Helper.validateRelationshipType(relationshipType))
+                .minAge(Helper.validateMinAge(minAge))
+                .maxAge(Helper.validateMaxAge(maxAge, minAge))
+                .preferredGender(Helper.validatePreferredGender(preferredGender))
+                .preferredCourses(Helper.validateCourses(preferredCourses))
+                .maxDistance(Helper.validateMaxDistance(maxDistance))
                 .smokingPreference(smokingPreference)
                 .drinkingPreference(drinkingPreference)
                 .build();
