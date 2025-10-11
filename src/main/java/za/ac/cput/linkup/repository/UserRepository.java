@@ -10,13 +10,18 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User,Long> {
+
+
     User findByUsernameAndPassword(String username, String password);
     List<User> findAllByCourse(Course course);
     List<User> findAllByInstitution(Institution institution);
     List<User> findAllByAgeBetween(int minAge, int maxAge);
     List<User> findAllByGender(Gender gender);
     List<User> findAllByInterestsIn(Collection<Interest> interests);
+
+    Optional<User> findByUsername(String username);
 }
