@@ -1,5 +1,10 @@
 package za.ac.cput.linkup.controller;
 
+/**
+ * TicketController.java
+ * Author: Ethan Le Roux (222622172)
+ */
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

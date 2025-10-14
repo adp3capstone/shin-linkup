@@ -1,5 +1,10 @@
 package za.ac.cput.linkup.repository;
 
+/**
+ * TicketRepository.java
+ * Author: Ethan Le Roux (222622172)
+ */
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import za.ac.cput.linkup.domain.Ticket;

@@ -1,5 +1,10 @@
 package za.ac.cput.linkup.repository;
 
+/**
+ * PreferenceRepository.java
+ * Author: Ethan Le Roux (222622172)
+ */
+
 import za.ac.cput.linkup.domain.Preference;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

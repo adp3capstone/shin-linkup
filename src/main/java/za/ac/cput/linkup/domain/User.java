@@ -14,6 +14,7 @@ import java.util.Set;
 @Setter
 @SuperBuilder
 @Entity
+@Table(name="user")
 @AllArgsConstructor
 public class User extends BaseUser{
     private int age;

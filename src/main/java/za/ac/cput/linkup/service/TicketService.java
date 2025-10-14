@@ -1,5 +1,10 @@
 package za.ac.cput.linkup.service;
 
+/**
+ * TicketService.java
+ * Author: Ethan Le Roux (222622172)
+ */
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import za.ac.cput.linkup.domain.Ticket;

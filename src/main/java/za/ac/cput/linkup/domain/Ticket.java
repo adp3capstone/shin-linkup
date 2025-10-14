@@ -30,6 +30,6 @@ public class Ticket {
     private LocalDateTime resolvedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "resolved_by_user_id")
-    private User resolvedBy;
+    @JoinColumn(name = "resolved_by_admin_id")
+    private Admin resolvedBy;
 }

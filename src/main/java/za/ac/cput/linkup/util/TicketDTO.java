@@ -1,5 +1,10 @@
 package za.ac.cput.linkup.util;
 
+/**
+ * TicketDTO.java
+ * Author: Ethan Le Roux (222622172)
+ */
+
 import lombok.Getter;
 import lombok.Setter;
 import za.ac.cput.linkup.domain.Ticket;
