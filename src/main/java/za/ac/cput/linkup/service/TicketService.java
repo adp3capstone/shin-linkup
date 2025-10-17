@@ -7,6 +7,7 @@ package za.ac.cput.linkup.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import za.ac.cput.linkup.domain.Admin;
 import za.ac.cput.linkup.domain.Ticket;
 import za.ac.cput.linkup.repository.TicketRepository;
 
@@ -48,5 +49,9 @@ public class TicketService {
 
     public List<Ticket> getTicketsByUserId(Long userId) {
         return ticketRepository.findByUser_UserId(userId);
+    }
+
+    public List<Ticket> getTicketsByAdminId(Admin adminId) {
+        return ticketRepository.findByAssignedTo(adminId);
     }
 }

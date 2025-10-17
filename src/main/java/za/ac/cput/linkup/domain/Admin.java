@@ -23,4 +23,11 @@ public class Admin extends BaseUser{
             cascade = CascadeType.ALL
     )
     List<Ticket> resolvedTickets;
+
+    @OneToMany(
+            mappedBy = "assignedTo",
+            orphanRemoval = true,
+            cascade = CascadeType.ALL
+    )
+    List<Ticket> assignedTickets;
 }

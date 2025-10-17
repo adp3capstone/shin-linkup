@@ -24,7 +24,7 @@ public class TicketDTO {
     private LocalDateTime updatedAt;
     private LocalDateTime resolvedAt;
     private Long resolvedById;
-
+    private Long assignedToId;
     public TicketDTO(Long ticketId, Long userId, IssueType issueType, String description,
                      TicketStatus status, LocalDateTime createdAt, LocalDateTime updatedAt,
                      LocalDateTime resolvedAt, Long resolvedById) {
@@ -49,5 +49,6 @@ public class TicketDTO {
         this.updatedAt = ticket.getUpdatedAt();
         this.resolvedAt = ticket.getResolvedAt();
         this.resolvedById = ticket.getResolvedBy() != null ? ticket.getResolvedBy().getUserId() : null;
+        this.assignedToId = ticket.getAssignedTo() != null ? ticket.getAssignedTo().getUserId() : null;
     }
 }

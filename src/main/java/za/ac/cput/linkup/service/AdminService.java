@@ -48,4 +48,8 @@ public class AdminService {
     public void delete(Long id) {
         adminRepository.deleteById(id);
     }
+
+    public Admin findByUsernameAndPassword(String username, String password) {
+        return adminRepository.findByUsernameAndPassword(username, password);
+    }
 }

@@ -14,7 +14,7 @@ import za.ac.cput.linkup.domain.enums.Role;
 import za.ac.cput.linkup.factory.AdminFactory;
 import za.ac.cput.linkup.factory.UserFactory;
 import za.ac.cput.linkup.service.AdminService;
-import za.ac.cput.linkup.util.AdminSignUpRequest;
+import za.ac.cput.linkup.util.*;
 
 import java.util.List;
 
@@ -50,6 +50,48 @@ public class AdminController {
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<AdminDTO> login(@RequestBody AuthRequest request) {
+        Admin foundUser = adminService.findByUsernameAndPassword(request.getUsername(), request.getPassword());
+
+        if (foundUser == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        List<TicketDTO> assignedTicketDTOS = foundUser.getAssignedTickets().stream().map(
+                ticket -> new TicketDTO(
+                        ticket.getTicketId(),
+                        ticket.getUser().getUserId(),
+                        ticket.getIssueType(),
+                        ticket.getDescription(),
+                        ticket.getStatus(),
+                        ticket.getCreatedAt(),
+                        ticket.getUpdatedAt(),
+                        ticket.getResolvedAt(),
+                        ticket.getResolvedBy() != null ? ticket.getResolvedBy().getUserId() : null
+        )).toList();
+        List<TicketDTO> resolvedTicketDTOS = foundUser.getResolvedTickets().stream().map(
+                ticket -> new TicketDTO(
+                        ticket.getTicketId(),
+                        ticket.getUser().getUserId(),
+                        ticket.getIssueType(),
+                        ticket.getDescription(),
+                        ticket.getStatus(),
+                        ticket.getCreatedAt(),
+                        ticket.getUpdatedAt(),
+                        ticket.getResolvedAt(),
+                        ticket.getResolvedBy() != null ? ticket.getResolvedBy().getUserId() : null
+        )).toList();
+
+        AdminDTO adminDTO = new AdminDTO(
+                foundUser,
+                assignedTicketDTOS,
+                resolvedTicketDTOS
+        );
+
+        String token = foundUser.getUserId().toString();
+
+        return ResponseEntity.ok(adminDTO);
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<Admin> getAdminById(@PathVariable Long id) {
