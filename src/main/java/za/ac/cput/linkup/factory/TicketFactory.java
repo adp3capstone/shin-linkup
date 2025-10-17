@@ -1,5 +1,10 @@
 package za.ac.cput.linkup.factory;
 
+/**
+ * TicketFactory.java
+ * Author: Ethan Le Roux (222622172)
+ */
+
 import za.ac.cput.linkup.domain.Ticket;
 import za.ac.cput.linkup.domain.User;
 import za.ac.cput.linkup.domain.enums.IssueType;
