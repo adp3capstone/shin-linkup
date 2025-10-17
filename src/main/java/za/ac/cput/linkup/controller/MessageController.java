@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/messages")
-@CrossOrigin(origins = "http://localhost:8081")
 public class MessageController {
 
     private final MessageService messageService;

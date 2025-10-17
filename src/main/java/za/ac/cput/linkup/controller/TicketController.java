@@ -24,7 +24,6 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/tickets")
-@CrossOrigin(origins = "http://localhost:8081")
 public class TicketController {
 
     private final TicketService ticketService;

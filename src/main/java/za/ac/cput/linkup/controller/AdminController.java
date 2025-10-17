@@ -7,26 +7,35 @@ package za.ac.cput.linkup.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
 import za.ac.cput.linkup.domain.Admin;
 import za.ac.cput.linkup.domain.User;
 import za.ac.cput.linkup.domain.enums.Role;
 import za.ac.cput.linkup.factory.AdminFactory;
 import za.ac.cput.linkup.factory.UserFactory;
+import za.ac.cput.linkup.security.AdminDetailsService;
+import za.ac.cput.linkup.security.JwtUtil;
 import za.ac.cput.linkup.service.AdminService;
 import za.ac.cput.linkup.util.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/admin")
-@CrossOrigin(origins = "http://localhost:8081")
 public class AdminController {
-
+    private final AdminDetailsService adminDetailsService;
     private final AdminService adminService;
+    private final JwtUtil jwtUtil;
 
-    public AdminController(AdminService adminService) {
+    public AdminController(
+                           AdminDetailsService adminDetailsService, AdminService adminService,
+                           JwtUtil jwtUtil) {
+        this.adminDetailsService = adminDetailsService;
         this.adminService = adminService;
+        this.jwtUtil = jwtUtil;
     }
 
     @PostMapping("/signup")
@@ -51,12 +60,15 @@ public class AdminController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AdminDTO> login(@RequestBody AuthRequest request) {
+    public ResponseEntity<?> login(@RequestBody AuthRequest request) {
         Admin foundUser = adminService.findByUsernameAndPassword(request.getUsername(), request.getPassword());
 
         if (foundUser == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Invalid username or password");
         }
+
+        // Map tickets to DTOs
         List<TicketDTO> assignedTicketDTOS = foundUser.getAssignedTickets().stream().map(
                 ticket -> new TicketDTO(
                         ticket.getTicketId(),
@@ -68,7 +80,9 @@ public class AdminController {
                         ticket.getUpdatedAt(),
                         ticket.getResolvedAt(),
                         ticket.getResolvedBy() != null ? ticket.getResolvedBy().getUserId() : null
-        )).toList();
+                )
+        ).toList();
+
         List<TicketDTO> resolvedTicketDTOS = foundUser.getResolvedTickets().stream().map(
                 ticket -> new TicketDTO(
                         ticket.getTicketId(),
@@ -80,18 +94,22 @@ public class AdminController {
                         ticket.getUpdatedAt(),
                         ticket.getResolvedAt(),
                         ticket.getResolvedBy() != null ? ticket.getResolvedBy().getUserId() : null
-        )).toList();
+                )
+        ).toList();
 
-        AdminDTO adminDTO = new AdminDTO(
-                foundUser,
-                assignedTicketDTOS,
-                resolvedTicketDTOS
-        );
+        AdminDTO adminDTO = new AdminDTO(foundUser, assignedTicketDTOS, resolvedTicketDTOS);
 
-        String token = foundUser.getUserId().toString();
+        // Generate JWT token
+        String token = jwtUtil.generateToken(foundUser.getUsername());
 
-        return ResponseEntity.ok(adminDTO);
+        // Return user info + token
+        Map<String, Object> response = new HashMap<>();
+        response.put("admin", adminDTO);
+        response.put("token", token);
+
+        return ResponseEntity.ok(response);
     }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<Admin> getAdminById(@PathVariable Long id) {
