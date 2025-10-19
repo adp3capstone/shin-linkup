@@ -33,7 +33,7 @@ public class Review {
         return reviewId;
     }
 
-    public User getuser() {
+    public User getUser() {
         return user;
     }
 

@@ -1,38 +1,20 @@
 package za.ac.cput.linkup.util;
 
 public class ReviewDTO {
+
+    private Long reviewId;
     private String reviewText;
-    private String username;
+    private UserDTO user; // ✅ includes the user info for the review creator
 
-    public ReviewDTO(){}
+    public ReviewDTO() {}
 
-    public ReviewDTO(String reviewText, String username) {
-        this.reviewText = reviewText;
-        this.username = username;
-    }
+    public Long getReviewId() { return reviewId; }
+    public void setReviewId(Long reviewId) { this.reviewId = reviewId; }
 
+    public String getReviewText() { return reviewText; }
+    public void setReviewText(String reviewText) { this.reviewText = reviewText; }
 
-    public String getReviewText() {
-        return reviewText;
-    }
+    public UserDTO getUser() { return user; }
+    public void setUser(UserDTO user) { this.user = user; }
 
-    public void setReviewText(String reviewText) {
-        this.reviewText = reviewText;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    @Override
-    public String toString() {
-        return "ReviewDTO{" +
-                "reviewText='" + reviewText + '\'' +
-                ", username='" + username + '\'' +
-                '}';
-    }
 }

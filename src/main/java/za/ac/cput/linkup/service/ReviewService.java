@@ -35,4 +35,10 @@ public class ReviewService implements IReviewService {
     public List<Review> getAll() {
         return this.repository.findAll();
     }
+
+    @Override
+    public boolean delete(long reviewId) {
+        repository.deleteById(reviewId);
+        return true;
+    }
 }
