@@ -28,7 +28,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/user")
-@CrossOrigin(origins = "http://localhost:8081")
+@CrossOrigin(origins = "http://localhost:8083")
 public class UserController {
     private final UserService userService;
     private final PreferenceService preferenceService;
@@ -164,6 +164,47 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @DeleteMapping("/delete/{userId}")
+    public ResponseEntity<String> deleteUser(
+            @PathVariable long userId,
+            @RequestHeader("Authorization") String authHeader) {
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("invalid Authorization header.");
+        }
+
+        String token = authHeader.substring(7);
+        String usernameFromToken;
+        try {
+            usernameFromToken = jwtUtil.extractUsername(token);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Invalid token.");
+        }
+
+        User tokenUser = userService.findByUsernameAndPassword(usernameFromToken, null);
+
+        if (tokenUser == null || tokenUser.getUserId() != userId) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(" You are not authorized to delete this account.");
+        }
+        User user = userService.read(userId);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(" User account not found.");
+        }
+        //  deletes the user account
+        try {
+            userService.delete(userId);
+            return ResponseEntity.ok(" Account deleted successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to delete account: " + e.getMessage());
+        }
+    }
+
 
     @GetMapping("/all")
     public ResponseEntity<List<UserDTO>> getAllUsers() {
