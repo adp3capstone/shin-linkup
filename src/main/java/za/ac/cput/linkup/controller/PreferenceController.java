@@ -28,7 +28,7 @@ public class PreferenceController {
     }
 
     @PostMapping
-    public ResponseEntity<PreferenceDTO> createPreference(@RequestBody Preference preference) {
+    public ResponseEntity<Preference> createPreference(@RequestBody Preference preference) {
         Long userId = preference.getUser().getUserId();
         User user = userService.read(userId);
         if (user == null) {
@@ -37,8 +37,7 @@ public class PreferenceController {
 
         preference.setUser(user);
         Preference saved = preferenceService.create(preference);
-        PreferenceDTO dto = new PreferenceDTO(saved);
-        return ResponseEntity.ok(dto);
+        return ResponseEntity.ok(saved);
     }
 
     @GetMapping("/{id}")
