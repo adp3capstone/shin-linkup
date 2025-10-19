@@ -28,7 +28,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/user")
-@CrossOrigin(origins = "http://localhost:8081")
 public class UserController {
     private final UserService userService;
     private final PreferenceService preferenceService;
@@ -258,6 +257,28 @@ public class UserController {
             Preference preferences = preferenceService.findByUser(user.getUserId());
             if (preferences != null) {
                 user.setPreferences(preferences);
+            }
+            userDTOs.add(new UserDTO(user));
+        }
+        return ResponseEntity.ok(userDTOs);
+    }
+
+    @GetMapping("/by-preference/{userId}")
+    public ResponseEntity<List<UserDTO>> getUsersByPreference(@PathVariable Long userId) {
+        Preference preference = preferenceService.findByUser(userId);
+        if (preference == null) {
+            return ResponseEntity.noContent().build();
+        }
+        List<User> users = userService.findByPreference(preference);
+        users.removeIf(u -> u.getUserId().equals(userId));
+        if (users.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        List<UserDTO> userDTOs = new ArrayList<>();
+        for (User user : users) {
+            Preference pref = preferenceService.findByUser(user.getUserId());
+            if (pref != null) {
+                user.setPreferences(pref);
             }
             userDTOs.add(new UserDTO(user));
         }

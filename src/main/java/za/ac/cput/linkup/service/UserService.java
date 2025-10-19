@@ -6,6 +6,7 @@ package za.ac.cput.linkup.service;
  */
 
 import za.ac.cput.linkup.domain.User;
+import za.ac.cput.linkup.domain.Preference;
 import za.ac.cput.linkup.domain.enums.Course;
 import za.ac.cput.linkup.domain.enums.Gender;
 import za.ac.cput.linkup.domain.enums.Institution;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Collections;
 
 @Service
 public class UserService {
@@ -77,5 +79,34 @@ public class UserService {
 
     public List<User> findAll(){
         return userRepository.findAll();
+    }
+
+    public List<User> findByPreference(Preference preference) {
+        int minAge = preference.getMinAge();
+        int maxAge = preference.getMaxAge();
+        Gender gender = preference.getPreferredGender();
+        List<Course> courses = preference.getPreferredCourses();
+        List<Interest> interests = preference.getPreferredInterests();
+        boolean coursesEmpty = (courses == null || courses.isEmpty());
+        boolean interestsEmpty = (interests == null || interests.isEmpty());
+        if (coursesEmpty) {
+            courses = Collections.emptyList();
+        }
+        if (interestsEmpty) {
+            interests = Collections.emptyList();
+        }
+        Boolean smokingPref = preference.isSmokingPreference();
+        Boolean drinkingPref = preference.isDrinkingPreference();
+        return userRepository.findByPreference(
+                minAge,
+                maxAge,
+                gender,
+                courses,
+                interests,
+                smokingPref,
+                drinkingPref,
+                coursesEmpty,
+                interestsEmpty
+        );
     }
 }
