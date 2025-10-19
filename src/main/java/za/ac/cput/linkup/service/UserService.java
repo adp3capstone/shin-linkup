@@ -5,6 +5,7 @@ package za.ac.cput.linkup.service;
  * Author: Ethan Le Roux (222622172)
  */
 
+import org.springframework.dao.DataIntegrityViolationException;
 import za.ac.cput.linkup.domain.User;
 import za.ac.cput.linkup.domain.enums.Course;
 import za.ac.cput.linkup.domain.enums.Gender;
@@ -13,17 +14,22 @@ import za.ac.cput.linkup.domain.enums.Interest;
 import za.ac.cput.linkup.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import za.ac.cput.linkup.util.JwtUtil;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final JwtUtil jwtUtil;
+
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, JwtUtil jwtUtil) {
         this.userRepository = userRepository;
+        this.jwtUtil = jwtUtil;
     }
 
     public User create(User user) {
@@ -36,7 +42,23 @@ public class UserService {
 //                .setPassword(encryptedPassword)
 //                .build();
 
-        return userRepository.save(user);
+        // Check for duplicate email
+        Optional<User> existingEmail = Optional.ofNullable(userRepository.findByEmail(user.getEmail()));
+        if (existingEmail.isPresent()) {
+            throw new IllegalArgumentException("Email already exists.");
+        }
+
+        // Check for duplicate username
+        Optional<User> existingUsername = Optional.ofNullable(userRepository.findByUsername(user.getUsername()));
+        if (existingUsername.isPresent()) {
+            throw new IllegalArgumentException("Username already exists.");
+        }
+
+        try {
+            return userRepository.save(user);
+        } catch (DataIntegrityViolationException e) {
+            throw new RuntimeException("Failed to create user: " + e.getMessage());
+        }
     }
 
     public User read(Long id) {
@@ -78,4 +100,21 @@ public class UserService {
     public List<User> findAll(){
         return userRepository.findAll();
     }
+
+    //Forgot password
+
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);// Make sure UserRepository has a findByEmail method
+    }
+
+    public String generatePasswordResetToken(String email) {
+        return jwtUtil.generateToken(email);
+    }
+
+    public String createPasswordResetLink(String email) {
+        String token = generatePasswordResetToken(email);
+        return "http://localhost:8081/reset-password?token=" + token;
+    }
+
+
 }

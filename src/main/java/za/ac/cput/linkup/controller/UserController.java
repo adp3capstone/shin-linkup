@@ -8,6 +8,7 @@ import za.ac.cput.linkup.domain.Preference;
 import za.ac.cput.linkup.domain.User;
 import za.ac.cput.linkup.domain.enums.*;
 import za.ac.cput.linkup.factory.UserFactory;
+import za.ac.cput.linkup.service.EmailService;
 import za.ac.cput.linkup.service.ImageService;
 import za.ac.cput.linkup.service.PreferenceService;
 import za.ac.cput.linkup.service.UserService;
@@ -33,16 +34,18 @@ public class UserController {
     private final UserService userService;
     private final PreferenceService preferenceService;
     private final ImageService imageService;
+    private final EmailService emailService;
 
     private final JwtUtil jwtUtil;
 
     @Autowired
     public UserController(UserService userService, PreferenceService preferenceService, ImageService imageService,
-                          JwtUtil jwtUtil) {
+                          JwtUtil jwtUtil, EmailService emailService) {
         this.userService = userService;
         this.preferenceService = preferenceService;
         this.imageService = imageService;
         this.jwtUtil = jwtUtil;
+        this.emailService = emailService;
     }
 
     @PostMapping("/login")
@@ -89,9 +92,6 @@ public class UserController {
 
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
-
-
-
 
     @GetMapping("/{userId}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable long userId) {
@@ -263,4 +263,71 @@ public class UserController {
         }
         return ResponseEntity.ok(userDTOs);
     }
+
+    @PostMapping("/auth/forgot-password")
+    public ResponseEntity<String> forgotPassword(@RequestParam String email) {
+        User user = userService.findByEmail(email);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("No user found with this email.");
+        }
+
+        // Generate JWT token for password reset
+        String resetToken = jwtUtil.generateToken(user.getEmail());
+
+        // Send email with reset link containing JWT
+        emailService.sendResetPasswordEmail(email, resetToken);
+
+        return ResponseEntity.ok("Password reset link has been sent to your email.");
+    }
+
+    @PostMapping("/auth/reset-password")
+    public ResponseEntity<String> resetPassword(
+            @RequestHeader("Authorization") String authHeader,
+            @RequestBody Map<String, String> requestBody) {
+
+        // Extract token from "Bearer <token>"
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Missing or invalid token.");
+        }
+
+        String token = authHeader.substring(7);
+        String newPassword = requestBody.get("newPassword");
+
+        String email = jwtUtil.extractUsername(token);
+        if (email == null || email.isBlank()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Invalid token.");
+        }
+
+        User user = userService.findByEmail(email);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("No user found with this email.");
+        }
+
+        user.setPassword(newPassword);
+        userService.update(user);
+
+        return ResponseEntity.ok("Password has been reset successfully.");
+    }
+
+    @PostMapping("/auth/generate-token")
+    public ResponseEntity<?> generateToken(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+
+        User user = userService.findByEmail(email);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("No user found with this email.");
+        }
+
+        // Generate JWT token
+        String token = userService.generatePasswordResetToken(email);
+
+        return ResponseEntity.ok(Map.of("token", token));
+    }
+
+
 }
