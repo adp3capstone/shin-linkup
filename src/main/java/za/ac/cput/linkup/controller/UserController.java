@@ -1,11 +1,12 @@
 package za.ac.cput.linkup.controller;
+/**
+ * UserController.java
+ * Author: Ethan Le Roux (222622172)
+ */
 
 import za.ac.cput.linkup.domain.Preference;
 import za.ac.cput.linkup.domain.User;
-import za.ac.cput.linkup.domain.enums.Course;
-import za.ac.cput.linkup.domain.enums.Gender;
-import za.ac.cput.linkup.domain.enums.Institution;
-import za.ac.cput.linkup.domain.enums.Interest;
+import za.ac.cput.linkup.domain.enums.*;
 import za.ac.cput.linkup.factory.UserFactory;
 import za.ac.cput.linkup.service.ImageService;
 import za.ac.cput.linkup.service.PreferenceService;
@@ -79,6 +80,8 @@ public class UserController {
                 user.getHeight(),
                 user.getOrientation()
         );
+        buildUser.setRole(Role.USER);
+
         if(buildUser==null){
             return ResponseEntity.badRequest().body("Not all fields were completed correctly. Please try signing up again.");
         }
@@ -86,6 +89,7 @@ public class UserController {
 
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
+
 
 
 

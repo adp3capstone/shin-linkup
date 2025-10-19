@@ -1,5 +1,10 @@
 package za.ac.cput.linkup.factory;
 
+/**
+ * UserFactory.java
+ * Author: Ethan Le Roux (222622172)
+ */
+
 import za.ac.cput.linkup.domain.EmergencyContact;
 import za.ac.cput.linkup.domain.Image;
 import za.ac.cput.linkup.domain.Preference;
@@ -62,4 +67,6 @@ public class UserFactory {
                 .orientation(orientation)
                 .build();
     }
+
+
 }

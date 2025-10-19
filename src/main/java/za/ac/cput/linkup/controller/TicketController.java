@@ -1,25 +1,39 @@
 package za.ac.cput.linkup.controller;
 
+/**
+ * TicketController.java
+ * Author: Ethan Le Roux (222622172)
+ */
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import za.ac.cput.linkup.domain.Admin;
 import za.ac.cput.linkup.domain.Ticket;
+import za.ac.cput.linkup.domain.enums.TicketStatus;
+import za.ac.cput.linkup.service.AdminService;
 import za.ac.cput.linkup.service.TicketService;
+import za.ac.cput.linkup.util.AdminAssignTicketRequest;
 import za.ac.cput.linkup.util.TicketDTO;
 import za.ac.cput.linkup.util.TicketRequest;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/tickets")
+@CrossOrigin(origins = "http://localhost:8081")
 public class TicketController {
 
     private final TicketService ticketService;
+    private final AdminService adminService;
 
     @Autowired
-    public TicketController(TicketService ticketService) {
+    public TicketController(TicketService ticketService, AdminService adminService) {
         this.ticketService = ticketService;
+        this.adminService = adminService;
     }
 
     @GetMapping("/{id}")
@@ -58,7 +72,7 @@ public class TicketController {
                 .user(ticketReq.getUser())
                 .issueType(ticketReq.getIssueType())
                 .description(ticketReq.getDescription())
-                .status(null)
+                .status(TicketStatus.UNASSIGNED)
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .resolvedAt(null)
@@ -117,7 +131,10 @@ public class TicketController {
             builder.resolvedBy(ticket.getResolvedBy());
         }
 
-        Ticket patchedTicket = builder.updatedAt(LocalDateTime.now()).build();
+
+        Ticket patchedTicket = builder
+                .updatedAt(LocalDateTime.now())
+                .build();
 
         Ticket updated = ticketService.updateTicket(patchedTicket);
         if(updated != null) {
@@ -157,4 +174,93 @@ public class TicketController {
 
         return ResponseEntity.ok(dtos);
     }
+
+    @GetMapping("/admin/{adminId}")
+    public ResponseEntity<List<TicketDTO>> getTicketsByAdminId(@PathVariable Long adminId) {
+        Optional<Admin> admin = adminService.findById(adminId);
+        if (admin.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        List<Ticket> tickets = ticketService.getTicketsByAdminId(admin.get());
+        if (tickets.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        List<TicketDTO> dtos = tickets.stream().map(ticket -> new TicketDTO(
+                ticket.getTicketId(),
+                ticket.getUser().getUserId(),
+                ticket.getIssueType(),
+                ticket.getDescription(),
+                ticket.getStatus(),
+                ticket.getCreatedAt(),
+                ticket.getUpdatedAt(),
+                ticket.getResolvedAt(),
+                ticket.getResolvedBy() != null ? ticket.getResolvedBy().getUserId() : null
+        )).toList();
+        return ResponseEntity.ok(dtos);
+    }
+
+    @PatchMapping("/assign")
+    public ResponseEntity<TicketDTO> assignTicketToAdmin(@RequestBody AdminAssignTicketRequest adminAssignTicketRequest) {
+        Long ticketId = adminAssignTicketRequest.getTicketId();
+        Long adminId = adminAssignTicketRequest.getAdminId();
+
+        Ticket existingTicket = ticketService.getTicket(ticketId);
+        Admin admin = adminService.findById(adminId).orElse(null);
+
+        if (admin == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        if (existingTicket == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        // Create a new updated ticket using the builder
+        Ticket updatedTicket = existingTicket.toBuilder()
+                .assignedTo(admin)
+                .status(TicketStatus.IN_PROGRESS)
+                .updatedAt(LocalDateTime.now())
+                .build();
+
+        updatedTicket = ticketService.updateTicket(updatedTicket);
+
+        if (updatedTicket == null) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+
+        return ResponseEntity.ok(new TicketDTO(updatedTicket));
+    }
+
+    @PatchMapping("/resolve")
+    public ResponseEntity<TicketDTO> resolveTicket(@RequestBody AdminAssignTicketRequest adminAssignTicketRequest) {
+        Long ticketId = adminAssignTicketRequest.getTicketId();
+        Long adminId = adminAssignTicketRequest.getAdminId();
+
+        Ticket existingTicket = ticketService.getTicket(ticketId);
+        Admin admin = adminService.findById(adminId).orElse(null);
+
+        if (admin == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        if (existingTicket == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        Ticket updatedTicket = existingTicket.toBuilder()
+                .status(TicketStatus.RESOLVED)
+                .resolvedAt(LocalDateTime.now())
+                .resolvedBy(admin)
+                .updatedAt(LocalDateTime.now())
+                .build();
+
+        updatedTicket = ticketService.updateTicket(updatedTicket);
+
+        if (updatedTicket == null) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+
+        return ResponseEntity.ok(new TicketDTO(updatedTicket));
+    }
+
 }
