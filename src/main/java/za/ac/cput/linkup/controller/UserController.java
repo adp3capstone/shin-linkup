@@ -28,7 +28,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/user")
-@CrossOrigin(origins = "http://localhost:8083")
+@CrossOrigin(origins = "http://localhost:8081")
 public class UserController {
     private final UserService userService;
     private final PreferenceService preferenceService;
@@ -154,14 +154,14 @@ public class UserController {
 
 
     @DeleteMapping("/delete")
-    public ResponseEntity<Void> deleteImage(@RequestParam long userId) {
+    public ResponseEntity<?> deleteImage(@RequestParam long userId) {
         userService.delete(userId);
         if (userService.read(userId) != null) {
             return ResponseEntity
                     .status(409)
                     .build();
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.accepted().body("User Accounted has been deleted");
         }
     }
 
