@@ -1,6 +1,8 @@
 package za.ac.cput.linkup.util;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 import za.ac.cput.linkup.domain.enums.*;
 import za.ac.cput.linkup.domain.*;
@@ -8,6 +10,8 @@ import za.ac.cput.linkup.domain.*;
 import java.util.List;
 @ToString
 @Getter
+@Setter
+@NoArgsConstructor
 public class SignUpRequest {
             String firstName;
             String lastName;
