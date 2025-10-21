@@ -45,4 +45,6 @@ public interface UserRepository extends JpaRepository<User,Long> {
             @org.springframework.data.repository.query.Param("coursesEmpty") boolean coursesEmpty,
             @org.springframework.data.repository.query.Param("interestsEmpty") boolean interestsEmpty
     );
+    User findByEmail(String email);
+    User findByUsername(String username);
 }
