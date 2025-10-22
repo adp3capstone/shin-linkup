@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import za.ac.cput.linkup.util.JwtUtil;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 

@@ -283,7 +283,6 @@ public class UserController {
         }
         return ResponseEntity.ok(userDTOs);
     }
-
     @PostMapping("/auth/forgot-password")
     public ResponseEntity<String> forgotPassword(@RequestParam String email) {
         User user = userService.findByEmail(email);
