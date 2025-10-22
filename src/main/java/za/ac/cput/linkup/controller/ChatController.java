@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/chats")
-@CrossOrigin(origins = "http://localhost:8081")
 public class ChatController {
 
     private final ChatService chatService;

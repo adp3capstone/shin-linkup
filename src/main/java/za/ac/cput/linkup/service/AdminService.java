@@ -33,6 +33,9 @@ public class AdminService {
     public Optional<Admin> findById(Long id) {
         return adminRepository.findById(id);
     }
+    public Admin findByUsername(String username) {
+        return adminRepository.findByUsername(username);
+    }
 
     public List<Admin> findAll() {
         return adminRepository.findAll();

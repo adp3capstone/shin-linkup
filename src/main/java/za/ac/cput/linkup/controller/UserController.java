@@ -8,19 +8,18 @@ import za.ac.cput.linkup.domain.Preference;
 import za.ac.cput.linkup.domain.User;
 import za.ac.cput.linkup.domain.enums.*;
 import za.ac.cput.linkup.factory.UserFactory;
+import za.ac.cput.linkup.security.JwtUtil;
 import za.ac.cput.linkup.service.EmailService;
 import za.ac.cput.linkup.service.ImageService;
 import za.ac.cput.linkup.service.PreferenceService;
 import za.ac.cput.linkup.service.UserService;
 import za.ac.cput.linkup.util.*;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -29,7 +28,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/user")
-@CrossOrigin(origins = "http://localhost:8081")
 public class UserController {
     private final UserService userService;
     private final PreferenceService preferenceService;
@@ -58,7 +56,7 @@ public class UserController {
 
 //        String token = jwtUtil.generateToken(request.getUsername());
 
-        String token = foundUser.getUserId().toString();
+        String token = jwtUtil.generateToken(request.getUsername());
         UserDTO userDTO = new UserDTO(foundUser);
 
         return ResponseEntity.ok(new AuthResponse(token, userDTO));
