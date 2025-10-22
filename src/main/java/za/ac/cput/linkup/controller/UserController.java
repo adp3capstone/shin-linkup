@@ -29,6 +29,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/user")
+@CrossOrigin(origins = "http://localhost:8081")
 public class UserController {
     private final UserService userService;
     private final PreferenceService preferenceService;
@@ -284,6 +285,7 @@ public class UserController {
         }
         return ResponseEntity.ok(userDTOs);
     }
+
     @PostMapping("/auth/forgot-password")
     public ResponseEntity<String> forgotPassword(@RequestParam String email) {
         User user = userService.findByEmail(email);
